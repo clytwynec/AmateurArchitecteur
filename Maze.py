@@ -143,8 +143,28 @@ class Maze:
 	#
 	###################################################################################
 	def MarkBoulders(self):
-		return
+		for i in range(0, len(self.mGrid)): 
+			for j in range(0, len(self.mGrid[i])):
+				currentCell = (i,j)
 
+				neighbors = [
+				(currentCell[0], currentCell[1] + 1),
+				(currentCell[0], currentCell[1] - 1),
+				(currentCell[0] + 1, currentCell[1]),
+				(currentCell[0] - 1, currentCell[1])
+				]
+
+				if self.mGrid[i][j] == 1:
+					count = 0
+					for k in range(0, len(neighbors)):
+						if neighbors[k][0]>=0 and neighbors[k][0]<self.mSize[0]:
+							if neighbors[k][1]>=0 and neighbors[k][1]<self.mSize[1]:
+								if self.mGrid[neighbors[k][0]][neighbors[k][1]] == 1:
+									count = count + 1
+					if count > 2:
+						self.mBoulders.append(currentCell)
+		print self.mBoulders
+		return
 	###################################################################################
 	# ToggleGridPoint
 	#
@@ -168,6 +188,8 @@ class Maze:
 
 				if (row == 0 and col == 0):
 					pygame.draw.rect(self.mSurface, pygame.Color(0, 255, 0), rect)
+				elif (row,col) in self.mBoulders:
+					pygame.draw.rect(self.mSurface, pygame.Color(150, 150, 150), rect)
 				elif (row == self.mSize[0] - 1 and col == self.mSize[1] - 1):
 					pygame.draw.rect(self.mSurface, pygame.Color(255, 0, 0), rect)
 				elif (self.mGrid[row][col] == 1):

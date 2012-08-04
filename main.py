@@ -39,6 +39,7 @@ ticker = kernel.Ticker()
 
 maze = Maze(kernel)
 maze.Generate((29, 35))
+maze.MarkBoulders()
 maze.Draw()
 
 monster = Monster(kernel)
