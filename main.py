@@ -19,6 +19,7 @@ import RoboPy
 from GS_MainMenu import *
 from GS_OptionsMenu import *
 from Maze import *
+from Monster import *
 
 #########################
 # Start Main
@@ -32,10 +33,12 @@ kernel = RoboPy.GameKernel()
 screenSurface = kernel.InitializeDisplay((800, 600))
 ticker = kernel.Ticker()
 
-
 maze = Maze(kernel)
-maze.Generate((10, 10))
+maze.Generate((5, 7))
 maze.Draw()
+
+monster = Monster(kernel)
+monster.SetPath([(10, 0), (10, 10), (20, 10), (30, 10), (40, 10)])
 
 #### Initialize game states
 gsm = RoboPy.GameStateManager()
@@ -57,8 +60,10 @@ while (1):
 	screenSurface.blit(FPSSurf, FPSRect)
 
 	gsm.Update(delta)
+	monster.Update(delta)
 
 	maze.Draw()
+	monster.Draw()
 
 	kernel.ProcessSystemEvents()
 	kernel.FlipDisplay()
