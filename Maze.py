@@ -7,8 +7,9 @@ class Maze:
 		self.mGrid = []
 
 		# Horizonal and Vertical Walls
-		self.mHorizontalWalls = []
-		self.mVertialWalls = []
+		self.mTilesToWall = {}
+		self.mWalls = []
+		self.mBoulders = []
 
 		# Internal stuff, size and kernel
 		self.mSize = (0, 0)
@@ -75,6 +76,14 @@ class Maze:
 				currentCell = cellStack.pop()							
 		return
 
+	###################################################################################
+	# Solve
+	#
+	# Sovles a maze, given a starting point
+	#
+	# Parameters:
+	#	start - a 2-tuple of the tile to start with
+	###################################################################################
 	def Solve(self, start):
 		cellStack = []
 		totalCells = self.mSize[0] * self.mSize[1]
@@ -118,14 +127,32 @@ class Maze:
 		return []
 
 	###################################################################################
-	# WallSplit
+	# SplitWalls
 	#
 	# Splits a grid into a series of horizonal and vertical walls
 	#
 	###################################################################################
-	def WallSplit(self):
+	def SplitWalls(self):
 		return
 
+	###################################################################################
+	# MarkBoulders
+	#
+	# Marks the boulder in a maze.  A boulder is defined as a wall piece which is
+	# connected to 3 or more other wall pieces
+	#
+	###################################################################################
+	def MarkBoulders(self):
+		return
+
+	###################################################################################
+	# ToggleGridPoint
+	#
+	# Helper Function - Toggles a grid point from marked to unmarked and back
+	#
+	# Parameters:
+	#	point - the point to toggle
+	###################################################################################
 	def ToggleGridPoint(self, point):
 		self.mGrid[point[0]][point[1]] = ((self.mGrid[point[0]][point[1]] + 1) % 2)
 
