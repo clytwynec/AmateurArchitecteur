@@ -31,28 +31,45 @@ class Maze:
 		self.mSize = size
 		self.mGrid = [[ 1 for col in range(size[1]) ] for row in range(size[0])]
 		self.mSurface = pygame.Surface((size[0] * self.mTileSize, size[1] * self.mTileSize))
+
 		cellStack = []
 		totalCells = self.mSize[0]*self.mSize[1]
+
 		currentCell = (0,0)
-		visitedCells = 1
-		while visitedCells < totalCells:
+		self.mGrid[0][0] = 0
+		visitedCells = []
+
+		while len(visitedCells) < totalCells:
+			visitedCells.append(currentCell)
 			neighbors = [(currentCell[0],currentCell[1]+2),
 				(currentCell[0],currentCell[1]-2),
 				(currentCell[0]+2,currentCell[1]),
 				(currentCell[0]-2,currentCell[1])]
 			random.shuffle(neighbors)	
 			foundNeighbor = 0
+
 			for i in range(0, len(neighbors)):
 				print neighbors[i]
 				if neighbors[i][0]>=0 and neighbors[i][0]<self.mSize[0]:
 					if neighbors[i][1]>=0 and neighbors[i][1]<self.mSize[1]:
 						if self.mGrid[neighbors[i][0]][neighbors[i][1]] == 1:
 							self.mGrid[neighbors[i][0]][neighbors[i][1]] = 0
+
+							if neighbors[i][0]<currentCell[0]:
+								self.mGrid[neighbors[i][0]+1][neighbors[i][1]] = 0
+							if neighbors[i][0]>currentCell[0]:
+								self.mGrid[neighbors[i][0]-1][neighbors[i][1]] = 0
+							if neighbors[i][1]<currentCell[1]:
+								self.mGrid[neighbors[i][0]][neighbors[i][1]+1] = 0	
+							if neighbors[i][1]>currentCell[1]:
+								self.mGrid[neighbors[i][0]][neighbors[i][1]-1] = 0	
+
 							cellStack.append(neighbors[i])
 							foundNeighbor = 1
 							currentCell = neighbors[i]
-							visitedCells = visitedCells +1
-							break				
+
+							break
+											
 			if foundNeighbor == 0:
 				if len(cellStack)==0:
 					break
