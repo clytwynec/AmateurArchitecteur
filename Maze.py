@@ -48,7 +48,7 @@ class Maze:
 			random.shuffle(neighbors)	
 			foundNeighbor = 0
 
-			for i in range(0, len(neighbors)):
+			for i in range(0, len(neighbors)):	
 				if neighbors[i][0]>=0 and neighbors[i][0]<self.mSize[0]:
 					if neighbors[i][1]>=0 and neighbors[i][1]<self.mSize[1]:
 						if self.mGrid[neighbors[i][0]][neighbors[i][1]] == 1:
@@ -75,6 +75,47 @@ class Maze:
 				currentCell = cellStack.pop()							
 		return
 
+	def Solve(self, start):
+		cellStack = []
+		totalCells = self.mSize[0] * self.mSize[1]
+
+		end = (self.mSize[0] - 1, self.mSize[1] - 1)
+		currentCell = start
+		visitedCells = []
+
+		while len(visitedCells) < totalCells:
+			visitedCells.append(currentCell)
+
+			if (currentCell == end):
+				return cellStack
+
+			neighbors = [
+				(currentCell[0], currentCell[1] + 1),
+				(currentCell[0], currentCell[1] - 1),
+				(currentCell[0] + 1, currentCell[1]),
+				(currentCell[0] - 1, currentCell[1])
+			]
+
+			foundNeighbor = 0
+
+			for i in range(0, len(neighbors)):	
+				if neighbors[i][0] >= 0 and neighbors[i][0] < self.mSize[0]:
+					if neighbors[i][1] >= 0 and neighbors[i][1] < self.mSize[1]:
+						if neighbors[i] not in visitedCells and self.mGrid[neighbors[i][0]][neighbors[i][1]] == 0:
+							cellStack.append(neighbors[i])
+							foundNeighbor = 1
+							currentCell = neighbors[i]
+
+							break
+											
+			if foundNeighbor == 0:
+				if len(cellStack)==0:
+					break
+
+				currentCell = cellStack.pop()
+
+		return []
+
 	###################################################################################
 	# WallSplit
 	#
@@ -94,8 +135,12 @@ class Maze:
 			for col in range(self.mSize[1]):
 				rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, self.mTileSize, self.mTileSize)
 
-				if (self.mGrid[row][col] == 1):
-					pygame.draw.rect(self.mSurface, pygame.Color(0, 0, 0), rect)
+				if (row == 0 and col == 0):
+					pygame.draw.rect(self.mSurface, pygame.Color(0, 255, 0), rect)
+				elif (row == self.mSize[0] - 1 and col == self.mSize[1] - 1):
+					pygame.draw.rect(self.mSurface, pygame.Color(255, 0, 0), rect)
+				elif (self.mGrid[row][col] == 1):
+					pygame.draw.rect(self.mSurface, pygame.Color(90, 90, 90), rect)
 				else:
 					pygame.draw.rect(self.mSurface, pygame.Color(255, 255, 255), rect)
 

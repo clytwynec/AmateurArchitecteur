@@ -38,7 +38,7 @@ maze.Generate((29, 35))
 maze.Draw()
 
 monster = Monster(kernel)
-monster.SetPath([(10, 0), (10, 10), (20, 10), (30, 10), (40, 10)])
+monster.SetPath(maze.Solve((0, 0)))
 
 #### Initialize game states
 gsm = RoboPy.GameStateManager()
@@ -59,10 +59,10 @@ while (1):
 	FPSRect.topright = screenSurface.get_rect().topright
 	screenSurface.blit(FPSSurf, FPSRect)
 
-	gsm.Update(delta)
+	#gsm.Update(delta)
 	monster.Update(delta)
 
-	maze.Draw()
+	#maze.Draw()
 	monster.Draw()
 
 	kernel.ProcessSystemEvents()

@@ -11,8 +11,11 @@ class Monster:
 		self.mMonsterSize = 20
 
 		self.mSurface = pygame.Surface((self.mMonsterSize, self.mMonsterSize))
-		self.mSurface.fill(pygame.Color(255, 0, 255))
-		pygame.draw.circle(self.mSurface, pygame.Color(0, 0, 255), (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
+		self.mSurface.fill((255, 0, 255))
+		self.mSurface.set_colorkey((255, 0, 255))
+
+		pygame.draw.circle(self.mSurface, pygame.Color(0, 0, 255, 100), (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
+
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 
 		return
@@ -27,7 +30,10 @@ class Monster:
 	###################################################################################
 	def SetPath(self, path):
 		self.mPath = path
-		self.mDestination = self.mPath.pop(0)
+
+		rawDest = self.mPath.pop(0)
+		self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+
 
 
 	###################################################################################
@@ -45,23 +51,25 @@ class Monster:
 
 			moveVector = (0, 0)
 
-			if (abs(self.mDestination[0] - x) < 0.001 and abs(self.mDestination[1] - y) < 0.001):
-				self.mRect.topleft = self.mDestination
+			if (self.mDestination[0] == x and self.mDestination[1] == y):
+				self.mRect.left = self.mDestination[0]
+				self.mRect.top = self.mDestination[1]
 
 				if (len(self.mPath)):
-					self.mDestination = self.mPath.pop(0)
+					rawDest = self.mPath.pop(0)
+					self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
 				else:
 					self.mDestination = None
 					return
 
 			if (self.mDestination[0] > x):
-				moveVector = (1.0, 0.0)
+				moveVector = (1, 0)
 			elif (self.mDestination[0] < x):
-				moveVector = (-1.0, 0)
+				moveVector = (-1, 0)
 			elif (self.mDestination[1] > y):
-				moveVector = (0, 1.0)
+				moveVector = (0, 1)
 			elif (self.mDestination[1] < y):
-				moveVector = (0, -1.0)
+				moveVector = (0, -1)
 
 			self.mRect.move_ip(moveVector[0] * self.mSpeed, moveVector[1] * self.mSpeed)
 
