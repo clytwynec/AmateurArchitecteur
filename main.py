@@ -46,26 +46,21 @@ gsm.SwitchState("MainMenu")
 
 font = pygame.font.SysFont("Helvetica", 12)
 
-ticks = 0
+## Main Loop
+while (1):
 
-### Main Loop
-# while (1):
+	delta = ticker.get_time()
 
-# 	delta = ticker.get_time()
+	FPSSurf = font.render("FPS: " + str(int(ticker.get_fps())), True, (255, 255, 255))
+	FPSRect = FPSSurf.get_rect()
+	FPSRect.topright = screenSurface.get_rect().topright
+	screenSurface.blit(FPSSurf, FPSRect)
 
-# 	if (ticks > 100):
-# 		gsm.SwitchState("OptionsMenu")
-# 	elif (ticks < 101):
-# 		ticks += 1
+	gsm.Update(delta)
 
-# 	FPSSurf = font.render("FPS: " + str(int(ticker.get_fps())), True, (255, 255, 255))
-# 	FPSRect = FPSSurf.get_rect()
-# 	FPSRect.topright = screenSurface.get_rect().topright
-# 	screenSurface.blit(FPSSurf, FPSRect)
+	maze.Draw()
 
-# 	gsm.Update(delta)
+	kernel.ProcessSystemEvents()
+	kernel.FlipDisplay()
 
-# 	kernel.ProcessSystemEvents()
-# 	kernel.FlipDisplay()
-
-# 	ticker.tick()
+	ticker.tick()
