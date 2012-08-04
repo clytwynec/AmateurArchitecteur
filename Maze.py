@@ -102,6 +102,7 @@ class Maze:
 				if neighbors[i][0] >= 0 and neighbors[i][0] < self.mSize[0]:
 					if neighbors[i][1] >= 0 and neighbors[i][1] < self.mSize[1]:
 						if neighbors[i] not in visitedCells and self.mGrid[neighbors[i][0]][neighbors[i][1]] == 0:
+							cellStack.append(currentCell)
 							cellStack.append(neighbors[i])
 							foundNeighbor = 1
 							currentCell = neighbors[i]
@@ -124,6 +125,9 @@ class Maze:
 	###################################################################################
 	def WallSplit(self):
 		return
+
+	def ToggleGridPoint(self, point):
+		self.mGrid[point[0]][point[1]] = ((self.mGrid[point[0]][point[1]] + 1) % 2)
 
 	###################################################################################	
 	# Draw

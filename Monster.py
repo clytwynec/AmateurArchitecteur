@@ -4,8 +4,11 @@ class Monster:
 	def __init__(self, kernel):
 		self.mPath = []
 
-		self.mSpeed = 1
+		self.mSpeed = 20
 		self.mDestination = None
+		self.mCurrentTile = (0, 0)
+
+		self.mTicks = 0
 
 		self.mKernel = kernel
 		self.mMonsterSize = 20
@@ -31,9 +34,14 @@ class Monster:
 	def SetPath(self, path):
 		self.mPath = path
 
-		rawDest = self.mPath.pop(0)
-		self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+		if (len(path)):
+			rawDest = self.mPath.pop(0)
+			self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+		else:
+			self.mDestination = None
 
+	def CurrentTile(self):
+		return self.mCurrentTile
 
 
 	###################################################################################
@@ -45,7 +53,10 @@ class Monster:
 	#	delta - time delta between the last tick and this one
 	###################################################################################
 	def Update(self, delta):
-		if (self.mDestination):
+		self.mTicks += delta
+
+		if (self.mDestination and self.mTicks > 0):
+			self.mTicks = 0
 			x = self.mRect.left
 			y = self.mRect.top
 
@@ -57,6 +68,7 @@ class Monster:
 
 				if (len(self.mPath)):
 					rawDest = self.mPath.pop(0)
+					self.mCurrentTile = rawDest
 					self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
 				else:
 					self.mDestination = None

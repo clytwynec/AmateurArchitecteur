@@ -10,7 +10,9 @@
 # System level imports
 from optparse import OptionParser
 import sys
+import math
 import pygame
+import random
 
 from pygame.locals import *
 
@@ -20,6 +22,8 @@ from GS_MainMenu import *
 from GS_OptionsMenu import *
 from Maze import *
 from Monster import *
+
+random.seed(0)
 
 #########################
 # Start Main
@@ -62,10 +66,26 @@ while (1):
 	#gsm.Update(delta)
 	monster.Update(delta)
 
-	#maze.Draw()
+	maze.Draw()
 	monster.Draw()
 
-	kernel.ProcessSystemEvents()
+	for event in pygame.event.get():
+		if event.type == QUIT:
+			pygame.quit()
+			sys.exit()
+		elif event.type == MOUSEBUTTONDOWN:
+			tile = (int(math.floor(event.pos[1] / 20)), int(math.floor(event.pos[0] / 20)))
+
+			maze.ToggleGridPoint(tile)
+			newPath = maze.Solve(monster.CurrentTile())
+
+			if (len(newPath)):
+				monster.SetPath(newPath)
+			else:
+				monster.SetPath([])
+
+	#kernel.ProcessSystemEvents()
 	kernel.FlipDisplay()
 
 	ticker.tick()
+	
