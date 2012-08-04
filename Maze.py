@@ -50,7 +50,7 @@ class Maze:
 	def Draw(self):
 		for row in range(self.mSize[0]):
 			for col in range(self.mSize[1]):
-				rect = pygame.Rect(row * self.mTileSize, col * self.mTileSize, self.mTileSize, self.mTileSize)
+				rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, self.mTileSize, self.mTileSize)
 
 				if (self.mGrid[row][col] == 1):
 					pygame.draw.rect(self.mSurface, pygame.Color(0, 0, 0), rect)
