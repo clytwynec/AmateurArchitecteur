@@ -34,7 +34,7 @@ screenSurface = kernel.InitializeDisplay((800, 600))
 ticker = kernel.Ticker()
 
 maze = Maze(kernel)
-maze.Generate((71, 59))
+maze.Generate((29, 35))
 maze.Draw()
 
 monster = Monster(kernel)

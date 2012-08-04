@@ -13,7 +13,7 @@ class Maze:
 		# Internal stuff, size and kernel
 		self.mSize = (0, 0)
 		self.mKernel = kernel
-		self.mTileSize = 10
+		self.mTileSize = 20
 
 		# Pygame tomfoolery
 		self.mSurface = None
@@ -30,7 +30,7 @@ class Maze:
 	def Generate(self, size):
 		self.mSize = size
 		self.mGrid = [[ 1 for col in range(size[1]) ] for row in range(size[0])]
-		self.mSurface = pygame.Surface((size[0] * self.mTileSize, size[1] * self.mTileSize))
+		self.mSurface = pygame.Surface((size[1] * self.mTileSize, size[0] * self.mTileSize))
 
 		cellStack = []
 		totalCells = self.mSize[0]*self.mSize[1]
@@ -49,7 +49,6 @@ class Maze:
 			foundNeighbor = 0
 
 			for i in range(0, len(neighbors)):
-				print neighbors[i]
 				if neighbors[i][0]>=0 and neighbors[i][0]<self.mSize[0]:
 					if neighbors[i][1]>=0 and neighbors[i][1]<self.mSize[1]:
 						if self.mGrid[neighbors[i][0]][neighbors[i][1]] == 1:

@@ -8,11 +8,12 @@ class Monster:
 		self.mDestination = None
 
 		self.mKernel = kernel
+		self.mMonsterSize = 20
 
-		self.mSurface = pygame.Surface((10, 10))
+		self.mSurface = pygame.Surface((self.mMonsterSize, self.mMonsterSize))
 		self.mSurface.fill(pygame.Color(255, 0, 255))
-		pygame.draw.circle(self.mSurface, pygame.Color(0, 0, 255), (5, 5), 4)
-		self.mRect = pygame.Rect(0, 0, 10, 10)
+		pygame.draw.circle(self.mSurface, pygame.Color(0, 0, 255), (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
+		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 
 		return
 
