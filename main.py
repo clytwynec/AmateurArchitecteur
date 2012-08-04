@@ -34,7 +34,7 @@ ticker = kernel.Ticker()
 
 
 maze = Maze(kernel)
-maze.Generate((10, 10))
+maze.Generate((11, 11))
 maze.Draw()
 
 #### Initialize game states
