@@ -68,7 +68,7 @@ class Maze:
 							currentCell = neighbors[i]
 
 							break
-											
+
 			if foundNeighbor == 0:
 				if len(cellStack)==0:
 					break
