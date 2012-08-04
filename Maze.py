@@ -1,5 +1,6 @@
 import pygame
 import random
+from collections import defaultdict
 
 class Maze:
 	def __init__(self, kernel):
@@ -7,8 +8,10 @@ class Maze:
 		self.mGrid = []
 
 		# Horizonal and Vertical Walls
-		self.mTilesToWall = {}
-		self.mWalls = []
+		self.mTilesToHWall = defaultdict(list)
+		self.mTilesToVWall = defaultdict(list)
+		self.mHWalls = []
+		self.mVWalls = []
 		self.mBoulders = []
 
 		# Internal stuff, size and kernel
@@ -127,12 +130,45 @@ class Maze:
 		return []
 
 	###################################################################################
-	# SplitWalls
+	# BuildWalls
 	#
 	# Splits a grid into a series of horizonal and vertical walls
 	#
+	# There are a few main steps for this, but boils down to building both horizontal
+	# and vertical walls, and then building the tile to wall array
+	#
 	###################################################################################
-	def SplitWalls(self):
+	def BuildWalls(self):
+		self.MarkBoulders()
+
+		for row in self.mGrid:
+			currentWall = []
+
+			for cell in self.mGrid:
+				if (cell == 1 and cell not in self.mBoulders):
+					currentWall.append(cell)
+				else:
+					for cell in currentWall:
+						self.mTilesToHWall[cell].append(currentWall)
+
+					self.mHWalls.append(currentWall)
+					currentWall = []
+
+		for col in range(self.mSize[1]):
+			currentWall = []
+
+			for row in range(self.mSize[0]):
+				cell = self.mGrid[row][col]
+
+				if (cell == 1 and cell not in self.mBoulders):
+					currentWall.append(cell)
+				else:
+					for cell in currentWall:
+						self.mTilesToVWall[cell].append(currentWall)
+
+					self.mVWalls.append(currentWall)
+					currentWall = []
+
 		return
 
 	###################################################################################
@@ -175,6 +211,63 @@ class Maze:
 	###################################################################################
 	def ToggleGridPoint(self, point):
 		self.mGrid[point[0]][point[1]] = ((self.mGrid[point[0]][point[1]] + 1) % 2)
+
+	###################################################################################	
+	# MoveWall
+	#
+	# Given a tile and a direction, moves a wall to the farthest point it can go
+	# in that direction
+	#
+	# Parameters:
+	#	tile - coordinates of the tile we're trying to move
+	#	direction - one of the compass points to move towards.  
+	#		Can be 'N', 'S', 'E', or 'W'
+	###################################################################################	
+	def MoveWall(self, tile, direction):
+		wall = []
+		edge = (0, 0)
+		rowModifier = 0
+		colModifier = 0
+
+		if (direction == 'N'):
+			wall = self.mTilesToVWall[tile]
+			colModifier = -1
+			edge = wall[0]
+		elif (direction == 'S'):
+			wall = self.mTilesToVWall[tile]
+			colModifier = 1
+			edge = wall[-1]
+		elif (direction == 'W'):
+			wall = self.mTilesToHWall[tile]
+			rowModifier = -1
+			edge = wall[-1]
+		elif (direction == 'E'):
+			wall = self.mTilesToHWall[tile]
+			rowModifier = 1
+			edge = wall[0]
+
+		if (len(wall) > 0):
+			currentCell = (edge[0] + rowModifier, edge[1] + colModifier)
+			count = 0
+
+			while (self.mGrid[currentCell[0]][self.currentCell[1]] == 0):
+				count += 1
+				currentCell[0] = currentCell[0] + rowModifier
+				currentCell[1] = currentCell[1] + colModifier
+
+			if (count > 0):
+				# reset to edge
+				currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
+
+				reset = 0
+				for i in range(count + len(wall)):
+					if (reset > len(wall)):
+						self.mGrid[currentCell[0]][currentCell[1]] = 0
+					else:
+						self.mGrid[currentCell[0]][currentCell[1]] = 1
+
+					currentCell = (currentCell[0] + rowModifier, currentCell[1] + colModifier)
+
 
 	###################################################################################	
 	# Draw
