@@ -18,6 +18,7 @@ from pygame.locals import *
 import RoboPy
 from GS_MainMenu import *
 from GS_OptionsMenu import *
+from Maze import *
 
 #########################
 # Start Main
@@ -31,6 +32,11 @@ kernel = RoboPy.GameKernel()
 screenSurface = kernel.InitializeDisplay((800, 600))
 ticker = kernel.Ticker()
 
+
+maze = Maze(kernel)
+maze.Generate((10, 10))
+maze.Draw()
+
 #### Initialize game states
 gsm = RoboPy.GameStateManager()
 gsm.RegisterState(GS_MainMenu(kernel))
@@ -43,23 +49,23 @@ font = pygame.font.SysFont("Helvetica", 12)
 ticks = 0
 
 ### Main Loop
-while (1):
+# while (1):
 
-	delta = ticker.get_time()
+# 	delta = ticker.get_time()
 
-	if (ticks > 100):
-		gsm.SwitchState("OptionsMenu")
-	elif (ticks < 101):
-		ticks += 1
+# 	if (ticks > 100):
+# 		gsm.SwitchState("OptionsMenu")
+# 	elif (ticks < 101):
+# 		ticks += 1
 
-	FPSSurf = font.render("FPS: " + str(int(ticker.get_fps())), True, (255, 255, 255))
-	FPSRect = FPSSurf.get_rect()
-	FPSRect.topright = screenSurface.get_rect().topright
-	screenSurface.blit(FPSSurf, FPSRect)
+# 	FPSSurf = font.render("FPS: " + str(int(ticker.get_fps())), True, (255, 255, 255))
+# 	FPSRect = FPSSurf.get_rect()
+# 	FPSRect.topright = screenSurface.get_rect().topright
+# 	screenSurface.blit(FPSSurf, FPSRect)
 
-	gsm.Update(delta)
+# 	gsm.Update(delta)
 
-	kernel.ProcessSystemEvents()
-	kernel.FlipDisplay()
+# 	kernel.ProcessSystemEvents()
+# 	kernel.FlipDisplay()
 
-	ticker.tick()
+# 	ticker.tick()
