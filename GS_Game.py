@@ -25,6 +25,14 @@ class GS_Game(RoboPy.GameState):
 		# Other Stuff
 		self.mHoverTile = (0, 0)
 
+		#images
+		self.mScoreImage = None
+		self.mMovesImage = None
+		self.mLevelImage = None
+		self.mScoreRect = None
+		self.mMovesRect = None
+		self.mLevelRect = None
+
 		self.mCountDown = 0
 
 	def Initialize(self):
@@ -73,7 +81,7 @@ class GS_Game(RoboPy.GameState):
 		difficulty = self.mLevel * 10
 		moves = self.mMoves
 
-		if moves == 0: 
+		if moves == 0:
 			moves = 1
 
 		score = int(math.floor(difficulty * (100 * (1.0 / moves))))
