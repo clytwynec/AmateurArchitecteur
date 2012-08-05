@@ -33,6 +33,8 @@ class GS_Game(RoboPy.GameState):
 		self.mMovesRect = None
 		self.mLevelRect = None
 
+		self.mFont = None
+
 		self.mCountDown = 0
 
 	def Initialize(self):
@@ -63,6 +65,8 @@ class GS_Game(RoboPy.GameState):
 		self.mLevelImage.set_colorkey((0, 144, 247))
 		self.mLevelRect = self.mLevelImage.get_rect()
 		self.mLevelRect.topleft = (550, 570)
+
+		self.mFont = pygame.font.SysFont('Arial', 18, True)
 
 		return RoboPy.GameState.Initialize(self)
 
@@ -159,5 +163,23 @@ class GS_Game(RoboPy.GameState):
 		self.mKernel.DisplaySurface().blit(self.mScoreImage, self.mScoreRect)
 		self.mKernel.DisplaySurface().blit(self.mMovesImage, self.mMovesRect)
 		self.mKernel.DisplaySurface().blit(self.mLevelImage, self.mLevelRect)
+
+		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
+		scoreRect = scoreSurf.get_rect()
+		scoreRect.topleft = self.mScoreRect.topleft
+		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
+		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
+
+		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
+		scoreRect = scoreSurf.get_rect()
+		scoreRect.topleft = self.mScoreRect.topleft
+		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
+		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
+
+		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
+		scoreRect = scoreSurf.get_rect()
+		scoreRect.topleft = self.mScoreRect.topleft
+		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
+		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
 
 		return RoboPy.GameState.Update(self, delta)
