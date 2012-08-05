@@ -11,6 +11,9 @@ class Monster:
 		self.mCurrentTile = (0, 0)
 		self.mCage = (0, 0)
 
+		# This represents the top left corner of the maze
+		self.mOffset = (0, 0)
+
 		self.mTicks = 0
 
 		self.mNoPath = False
@@ -45,7 +48,7 @@ class Monster:
 
 		if (len(path)):
 			rawDest = self.mPath.pop(0)
-			self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+			self.mDestination = (rawDest[1] * self.mMonsterSize + self.mOffset[0], rawDest[0] * self.mMonsterSize + self.mOffset[1])
 			self.mNoPath = False
 			self.mFinished = False
 		else:
@@ -83,6 +86,10 @@ class Monster:
 	def SetCage(self, cage):
 		self.mCage = cage
 
+	def SetOffset(self, offset):
+		self.mOffset = offset
+		self.mRect.topleft = (self.mRect.top + self.mOffset[1], self.mRect.left + self.mOffset[0])
+
 	###################################################################################
 	# Update
 	#
@@ -111,7 +118,7 @@ class Monster:
 				if (len(self.mPath)):
 					rawDest = self.mPath.pop(0)
 					self.mCurrentTile = rawDest
-					self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+					self.mDestination = (rawDest[1] * self.mMonsterSize + self.mOffset[0], rawDest[0] * self.mMonsterSize + self.mOffset[1])
 				else:
 					self.mDestination = None
 					self.mFinished = not self.mNoPath

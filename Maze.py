@@ -20,6 +20,8 @@ class Maze:
 		self.mEnd = (0, 0)
 		self.mCage = (0, 0)
 
+		self.mOffset = (0, 0)
+
 		# Internal stuff, size and kernel
 		self.mSize = (0, 0)
 		self.mKernel = kernel
@@ -31,6 +33,9 @@ class Maze:
 
 	def GetCage(self):
 		return self.mCage	
+
+	def SetOffset(self, offset):
+		self.mOffset = offset
 
 	###################################################################################
 	# Generate
@@ -441,4 +446,4 @@ class Maze:
 
 		self.HighlightWalls(hoverTile)
 
-		self.mKernel.DisplaySurface().blit(self.mSurface, pygame.Rect(0, 0, self.mSize[0] * self.mTileSize, self.mSize[1] * self.mTileSize))
+		self.mKernel.DisplaySurface().blit(self.mSurface, pygame.Rect(self.mOffset[0], self.mOffset[1], self.mSize[0] * self.mTileSize, self.mSize[1] * self.mTileSize))
