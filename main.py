@@ -27,6 +27,7 @@ from GS_Tutorial2 import *
 from GS_Tutorial3 import *
 from GS_Tutorial4 import *
 from GS_Tutorial5 import *
+from GS_Instructions import *
 
 #random.seed(0)
 
@@ -53,6 +54,7 @@ gsm.RegisterState(GS_Tutorial2(kernel, gsm))
 gsm.RegisterState(GS_Tutorial3(kernel, gsm))
 gsm.RegisterState(GS_Tutorial4(kernel, gsm))
 gsm.RegisterState(GS_Tutorial5(kernel, gsm))
+gsm.RegisterState(GS_Instructions(kernel, gsm))
 
 gsm.SwitchState("MainMenu")
 

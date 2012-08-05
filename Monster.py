@@ -6,7 +6,7 @@ class Monster:
 	def __init__(self, kernel):
 		self.mPath = []
 
-		self.mSpeed = 2
+		self.mSpeed = 1
 		self.mDestination = None
 		self.mCurrentTile = (0, 0)
 		self.mCage = (0, 0)
@@ -79,6 +79,7 @@ class Monster:
 		self.mCaught = False 
 		
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
+		self.mRect.topleft = (self.mRect.top + self.mOffset[0], self.mRect.left + self.mOffset[1])
 
 	def SetSpeed(self, speed):
 		self.mSpeed = speed
@@ -107,8 +108,26 @@ class Monster:
 			y = self.mRect.top
 
 			moveVector = (0, 0)
+			speed = self.mSpeed
 
-			if (self.mDestination[0] == x and self.mDestination[1] == y):
+			if (self.mDestination[0] > x):
+				moveVector = (1, 0)
+				speed = min(self.mSpeed, abs(self.mDestination[0] - x))
+			elif (self.mDestination[0] < x):
+				moveVector = (-1, 0)
+				speed = min(self.mSpeed, abs(self.mDestination[0] - x))
+			elif (self.mDestination[1] > y):
+				moveVector = (0, 1)
+				speed = min(self.mSpeed, abs(self.mDestination[1] - y))
+			elif (self.mDestination[1] < y):
+				moveVector = (0, -1)
+				speed = min(self.mSpeed, abs(self.mDestination[1] - y))
+
+			moveVector = (moveVector[0] * speed, moveVector[1] * speed)
+
+			self.mRect.move_ip(moveVector[0], moveVector[1])
+
+			if (abs(self.mDestination[0] - x) <= self.mSpeed and abs(self.mDestination[1] - y) <= self.mSpeed):
 				self.mRect.left = self.mDestination[0]
 				self.mRect.top = self.mDestination[1]
 
@@ -123,17 +142,6 @@ class Monster:
 					self.mDestination = None
 					self.mFinished = not self.mNoPath
 					return
-
-			if (self.mDestination[0] > x):
-				moveVector = (1, 0)
-			elif (self.mDestination[0] < x):
-				moveVector = (-1, 0)
-			elif (self.mDestination[1] > y):
-				moveVector = (0, 1)
-			elif (self.mDestination[1] < y):
-				moveVector = (0, -1)
-
-			self.mRect.move_ip(moveVector[0] * self.mSpeed, moveVector[1] * self.mSpeed)
 
 	###################################################################################
 	# Draw

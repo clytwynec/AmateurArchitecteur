@@ -12,7 +12,7 @@ class GS_Game(RoboPy.GameState):
 	def __init__(self, kernel, gsm):
 		RoboPy.GameState.__init__(self, "Game", kernel, gsm)
 
-		self.mMazeSize = (11, 11)#(27, 39)
+		self.mMazeSize = (27, 39)
 		self.mMaze = None
 		self.mMonster = None
 
