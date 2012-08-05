@@ -35,8 +35,8 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mBigMonsterRect.top = 350
 		self.mBigMonsterRect.left = -10
 
-		vSpacing = 100
-		vOffset = 100
+		vSpacing = 80
+		vOffset = 75
 		items = 1
 
 		if (self.mGameStateManager.GetState("Game").IsInitialized()):
@@ -45,7 +45,7 @@ class GS_MainMenu(RoboPy.GameState):
 			self.mMenuImages["Game"].set_colorkey(Colors.BLUE)
 			self.mMenuImagesHover["Game"].set_colorkey(Colors.BLUE)
 			self.mMenuRects["Game"] = self.mMenuImages["Game"].get_rect()
-			self.mMenuRects["Game"].topleft = (235, items * vSpacing + vOffset)
+			self.mMenuRects["Game"].topleft = (275, items * vSpacing + vOffset)
 			self.mMenuItems["Game"] = self.mMenuImages["Game"]
 			items += 1
 
@@ -63,16 +63,26 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mMenuImages["Tutorial1"].set_colorkey(Colors.BLUE)
 		self.mMenuImagesHover["Tutorial1"].set_colorkey(Colors.BLUE)
 		self.mMenuRects["Tutorial1"] = self.mMenuImages["Tutorial1"].get_rect()
-		self.mMenuRects["Tutorial1"].topleft = (277, items * vSpacing + vOffset)
+		self.mMenuRects["Tutorial1"].topleft = (275, items * vSpacing + vOffset)
 		self.mMenuItems["Tutorial1"] = self.mMenuImages["Tutorial1"]
 		items += 1
+
+		self.mMenuImages["Instructions"] = pygame.image.load(os.path.join("Data", "instructionsText.bmp")).convert()
+		self.mMenuImagesHover["Instructions"] = pygame.image.load(os.path.join("Data", "instructionsText_hover.bmp")).convert()
+		self.mMenuImages["Instructions"].set_colorkey(Colors.BLUE)
+		self.mMenuImagesHover["Instructions"].set_colorkey(Colors.BLUE)
+		self.mMenuRects["Instructions"] = self.mMenuImages["Instructions"].get_rect()
+		self.mMenuRects["Instructions"].topleft = (275, items * vSpacing + vOffset)
+		self.mMenuItems["Instructions"] = self.mMenuImages["Instructions"]
+		items += 1
+
 
 		self.mMenuImages["Exit"] = pygame.image.load(os.path.join("Data", "exit.bmp")).convert()
 		self.mMenuImagesHover["Exit"] = pygame.image.load(os.path.join("Data", "exit_hover.bmp")).convert()
 		self.mMenuImages["Exit"].set_colorkey(Colors.BLUE)
 		self.mMenuImagesHover["Exit"].set_colorkey(Colors.BLUE)
 		self.mMenuRects["Exit"] = self.mMenuImages["Exit"].get_rect()
-		self.mMenuRects["Exit"].topleft = (325, items * vSpacing + vOffset)
+		self.mMenuRects["Exit"].topleft = (275, items * vSpacing + vOffset)
 		self.mMenuItems["Exit"] = self.mMenuImages["Exit"]
 		items += 1
 
