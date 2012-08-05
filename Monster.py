@@ -62,7 +62,7 @@ class Monster:
 		return self.mCaught
 
 	def HasNoPath(self):
-		return self.mNoPath
+		return self.mNoPath	
 
 	def Reset(self):
 		self.mPath = []
@@ -103,6 +103,7 @@ class Monster:
 			if (self.mDestination[0] == x and self.mDestination[1] == y):
 				self.mRect.left = self.mDestination[0]
 				self.mRect.top = self.mDestination[1]
+				if self.mCurrentTile == 
 
 				if (len(self.mPath)):
 					rawDest = self.mPath.pop(0)
