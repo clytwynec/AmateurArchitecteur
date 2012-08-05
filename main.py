@@ -38,7 +38,7 @@ screenSurface = kernel.InitializeDisplay((800, 600))
 ticker = kernel.Ticker()
 
 #### Stuff
-mazeSize = (29, 35)
+mazeSize = (29, 39)
 maze = Maze(kernel)
 maze.Generate(mazeSize)
 maze.BuildWalls()

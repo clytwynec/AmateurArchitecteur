@@ -19,7 +19,7 @@ class Monster:
 		self.mMonsterSize = 20
 
 		fullpath = os.path.join("Data", "monster.bmp")
-		self.mSurface = pygame.image.load(fullpath)
+		self.mSurface = pygame.image.load(fullpath).convert()
 
 		#self.mSurface.fill(Colors.TRANSPARENT)
 		self.mSurface.set_colorkey(Colors.TRANSPARENT)
@@ -47,7 +47,7 @@ class Monster:
 			self.mNoPath = False
 			self.mFinished = False
 		else:
-			self.mDestination = None
+			#self.mDestination = None
 			self.mNoPath = True
 
 	def CurrentTile(self):
@@ -102,7 +102,7 @@ class Monster:
 					self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
 				else:
 					self.mDestination = None
-					self.mFinished = True
+					self.mFinished = not self.mNoPath
 					return
 
 			if (self.mDestination[0] > x):
