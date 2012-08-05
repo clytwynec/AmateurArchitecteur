@@ -1,37 +1,65 @@
 import pygame
 import RoboPy
+import sys
+import os
+
+import Colors
+
+from pygame.locals import *
 
 class GS_MainMenu(RoboPy.GameState):
-	def __init__(self, kernel):
-		RoboPy.GameState.__init__(self, "MainMenu", kernel)
+	def __init__(self, kernel, gsm):
+		RoboPy.GameState.__init__(self, "MainMenu", kernel, gsm)
 
-		self.mHeaderFont = pygame.font.SysFont("Helvetica", 24, (255, 255, 255), True)
-		self.mMenuFont = pygame.font.SysFont("Helvetica", 16, (255, 255, 255))
 		self.mHeading = None
+		self.mHeadingRect = None
 		self.mMenuItems = {}
+		self.mMenuImages = {}
+		self.mMenuImagesHover = {}
 		self.mMenuRects = {}
+		self.mBGSurface = None
 
 	def Initialize(self):
-		self.mHeading = self.mHeaderFont.render("RoboPy Game Engine - Main Menu", True, (255, 255, 255))
+
+		self.mBGSurface = pygame.Surface(self.mKernel.DisplaySurface().get_size())
+		self.mBGSurface.fill(Colors.BLUE)
+
+		self.mHeading = pygame.image.load(os.path.join("Data", "main_title.bmp")).convert()
+		self.mHeading.set_colorkey(Colors.BLUE)
 		self.mHeadingRect = self.mHeading.get_rect()
-		self.mHeadingRect.topleft = (100, 100)
+		self.mHeadingRect.topleft = (50, 20)
 
-		self.mMenuItems["Game"] = self.mMenuFont.render("New Game", True, (255, 255, 255))
-		self.mMenuRects["Game"] = self.mMenuItems["Game"].get_rect()
-		self.mMenuRects["Game"].topleft = (150, 200)
+		vSpacing = 100
+		vOffset = 100
+		items = 1
 
-		self.mMenuItems["LoadGame"] = self.mMenuFont.render("Load Game", True, (255, 255, 255))
-		self.mMenuRects["LoadGame"] = self.mMenuItems["LoadGame"].get_rect()
-		self.mMenuRects["LoadGame"].topleft = (150, 250)
+		if (self.mGameStateManager.GetState("Game").IsInitialized()):
+			self.mMenuImages["Game"] = pygame.image.load(os.path.join("Data", "resume_game.bmp")).convert()
+			self.mMenuImagesHover["Game"] = pygame.image.load(os.path.join("Data", "resume_game_hover.bmp")).convert()
+			self.mMenuImages["Game"].set_colorkey(Colors.BLUE)
+			self.mMenuImagesHover["Game"].set_colorkey(Colors.BLUE)
+			self.mMenuRects["Game"] = self.mMenuImages["Game"].get_rect()
+			self.mMenuRects["Game"].topleft = (235, items * vSpacing + vOffset)
+			self.mMenuItems["Game"] = self.mMenuImages["Game"]
+			items += 1
 
-		self.mMenuItems["Options"] = self.mMenuFont.render("Options", True, (255, 255, 255))
-		self.mMenuRects["Options"] = self.mMenuItems["Options"].get_rect()
-		self.mMenuRects["Options"].topleft = (150, 300)
+		self.mMenuImages["NewGame"] = pygame.image.load(os.path.join("Data", "new_game.bmp")).convert()
+		self.mMenuImagesHover["NewGame"] = pygame.image.load(os.path.join("Data", "new_game_hover.bmp")).convert()
+		self.mMenuImages["NewGame"].set_colorkey(Colors.BLUE)
+		self.mMenuImagesHover["NewGame"].set_colorkey(Colors.BLUE)
+		self.mMenuRects["NewGame"] = self.mMenuImages["NewGame"].get_rect()
+		self.mMenuRects["NewGame"].topleft = (275, items * vSpacing + vOffset)
+		self.mMenuItems["NewGame"] = self.mMenuImages["NewGame"]
+		items += 1
 
-		self.mMenuItems["Exit"] = self.mMenuFont.render("Exit", True, (255, 255, 255))
-		self.mMenuRects["Exit"] = self.mMenuItems["Exit"].get_rect()
-		self.mMenuRects["Exit"].topleft = (150, 350)
-
+		self.mMenuImages["Exit"] = pygame.image.load(os.path.join("Data", "exit.bmp")).convert()
+		self.mMenuImagesHover["Exit"] = pygame.image.load(os.path.join("Data", "exit_hover.bmp")).convert()
+		self.mMenuImages["Exit"].set_colorkey(Colors.BLUE)
+		self.mMenuImagesHover["Exit"].set_colorkey(Colors.BLUE)
+		self.mMenuRects["Exit"] = self.mMenuImages["Exit"].get_rect()
+		self.mMenuRects["Exit"].topleft = (320, items * vSpacing + vOffset)
+		self.mMenuItems["Exit"] = self.mMenuImages["Exit"]
+		items += 1
 
 		return RoboPy.GameState.Initialize(self)
 
@@ -39,8 +67,8 @@ class GS_MainMenu(RoboPy.GameState):
 		return RoboPy.GameState.Destroy(self)
 
 	def Pause(self):
-		del self.mMenuItems
-		del self.mHeading
+		self.mMenuItems = {}
+		self.mHeading = None
 
 		return RoboPy.GameState.Pause(self)
 
@@ -49,7 +77,33 @@ class GS_MainMenu(RoboPy.GameState):
 
 		return RoboPy.GameState.Unpause(self)
 
+	def HandleEvent(self, event):
+		if event.type == KEYDOWN:
+			if event.key == K_ESCAPE:
+				self.mGameStateManager.SwitchState("Game")
+		elif event.type == MOUSEMOTION:
+			for item in self.mMenuRects:
+				if (self.mMenuRects[item].collidepoint(event.pos)):
+					self.mMenuItems[item] = self.mMenuImagesHover[item]
+				else:
+					self.mMenuItems[item] = self.mMenuImages[item]
+		elif event.type == MOUSEBUTTONDOWN:
+			for item in self.mMenuRects:
+				if (self.mMenuRects[item].collidepoint(event.pos)):
+					if (item == "Exit"):
+						pygame.quit()
+						sys.exit()
+					elif (item == "NewGame"):
+						if (self.mGameStateManager.GetState("Game").IsInitialized()):
+							self.mGameStateManager.GetState("Game").Destroy()
+						
+						self.mGameStateManager.SwitchState("Game")
+					else:
+						self.mGameStateManager.SwitchState(item)
+
+
 	def Update(self, delta):
+		self.mKernel.DisplaySurface().blit(self.mBGSurface, self.mKernel.DisplaySurface().get_rect())
 		self.mKernel.DisplaySurface().blit(self.mHeading, self.mHeadingRect)
 
 		for item in self.mMenuItems:

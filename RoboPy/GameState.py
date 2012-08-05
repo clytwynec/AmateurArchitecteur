@@ -14,11 +14,12 @@
 # 	Update(self, delta) -- tick method that dispatches to subelements 
 ###################################################################################
 class GameState:
-	def __init__(self, name, kernel):
+	def __init__(self, name, kernel, gsm):
 		self.mName = name
 		self.mInitialized = False
 		self.mActive = False
 		self.mKernel = kernel
+		self.mGameStateManager = gsm
 
 	def Name(self):
 		return self.mName
@@ -49,6 +50,9 @@ class GameState:
 	def Unpause(self):
 		self.mActive = True
 
+		return True
+
+	def HandleEvent(self, event):
 		return True
 
 	def Update(self, delta):

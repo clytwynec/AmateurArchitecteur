@@ -2,8 +2,8 @@ import pygame
 import RoboPy
 
 class GS_OptionsMenu(RoboPy.GameState):
-	def __init__(self, kernel):
-		RoboPy.GameState.__init__(self, "OptionsMenu", kernel)
+	def __init__(self, kernel, gsm):
+		RoboPy.GameState.__init__(self, "OptionsMenu", kernel, gsm)
 
 		self.mHeaderFont = pygame.font.SysFont("Helvetica", 24, (255, 255, 255), True)
 		self.mMenuFont = pygame.font.SysFont("Helvetica", 16, (255, 255, 255))
