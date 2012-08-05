@@ -141,33 +141,49 @@ class Maze:
 	def BuildWalls(self):
 		self.MarkBoulders()
 
-		for row in self.mGrid:
+		for i in range(len(self.mGrid)):
 			currentWall = []
 
-			for cell in self.mGrid:
-				if (cell == 1 and cell not in self.mBoulders):
+			for j in range(len(self.mGrid[i])):
+				cell = (i, j)
+
+				if (self.mGrid[i][j] == 1 and cell not in self.mBoulders):
 					currentWall.append(cell)
 				else:
-					for cell in currentWall:
-						self.mTilesToHWall[cell].append(currentWall)
+					if (len(currentWall) > 1):
+						for cell in currentWall:
+							self.mTilesToHWall[cell].append(currentWall)
 
-					self.mHWalls.append(currentWall)
+						self.mHWalls.append(currentWall)
 					currentWall = []
+
+			if (len(currentWall) > 1):
+				for cell in currentWall:
+					self.mTilesToHWall[cell].append(currentWall)
+
+				self.mHWalls.append(currentWall)
 
 		for col in range(self.mSize[1]):
 			currentWall = []
 
 			for row in range(self.mSize[0]):
-				cell = self.mGrid[row][col]
+				cell = (row, col)
 
-				if (cell == 1 and cell not in self.mBoulders):
+				if (self.mGrid[row][col] == 1 and cell not in self.mBoulders):
 					currentWall.append(cell)
 				else:
-					for cell in currentWall:
-						self.mTilesToVWall[cell].append(currentWall)
+					if (len(currentWall) > 1):
+						for cell in currentWall:
+							self.mTilesToVWall[cell].append(currentWall)
 
-					self.mVWalls.append(currentWall)
+						self.mVWalls.append(currentWall)
 					currentWall = []
+
+			if (len(currentWall) > 1):
+				for cell in currentWall:
+					self.mTilesToVWall[cell].append(currentWall)
+
+				self.mVWalls.append(currentWall)
 
 		return
 
@@ -199,7 +215,7 @@ class Maze:
 									count = count + 1
 					if count > 2:
 						self.mBoulders.append(currentCell)
-		print self.mBoulders
+
 		return
 	###################################################################################
 	# ToggleGridPoint
@@ -211,6 +227,36 @@ class Maze:
 	###################################################################################
 	def ToggleGridPoint(self, point):
 		self.mGrid[point[0]][point[1]] = ((self.mGrid[point[0]][point[1]] + 1) % 2)
+
+	###################################################################################	
+	# GetWalls
+	#
+	# Given a tile gets the walls that the tile is contained in
+	#
+	# Parameters:
+	#	tile - coordinates of the tile we're trying to move
+	###################################################################################	
+	def HighlightWalls(self, tile):
+		hColor = (0, 142, 255)
+		vColor = (255, 142, 0)
+
+		vWalls = self.mTilesToVWall[tile]
+
+		for wall in vWalls:
+			width, height = (self.mTileSize, self.mTileSize * len(wall))
+			row, col = wall[0]
+
+			rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, width, height)
+			pygame.draw.rect(self.mSurface, vColor, rect, 3)
+
+		hWalls = self.mTilesToHWall[tile]
+
+		for wall in hWalls:
+			width, height = (self.mTileSize * len(wall), self.mTileSize)
+			row, col = wall[0]
+
+			rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, width, height)
+			pygame.draw.rect(self.mSurface, hColor, rect, 3)
 
 	###################################################################################	
 	# MoveWall
@@ -274,20 +320,23 @@ class Maze:
 	#
 	# Puts the maze on the screen
 	###################################################################################
-	def Draw(self):
+	def Draw(self, hoverTile):
 		for row in range(self.mSize[0]):
 			for col in range(self.mSize[1]):
 				rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, self.mTileSize, self.mTileSize)
 
+
 				if (row == 0 and col == 0):
-					pygame.draw.rect(self.mSurface, pygame.Color(0, 255, 0), rect)
-				elif (row,col) in self.mBoulders:
-					pygame.draw.rect(self.mSurface, pygame.Color(150, 150, 150), rect)
+					pygame.draw.rect(self.mSurface, pygame.Color(0, 67, 77), rect)
 				elif (row == self.mSize[0] - 1 and col == self.mSize[1] - 1):
-					pygame.draw.rect(self.mSurface, pygame.Color(255, 0, 0), rect)
+					pygame.draw.rect(self.mSurface, pygame.Color(255, 188, 126), rect)
+				elif (row,col) in self.mBoulders:
+					pygame.draw.rect(self.mSurface, pygame.Color(100, 100, 100), rect)
 				elif (self.mGrid[row][col] == 1):
-					pygame.draw.rect(self.mSurface, pygame.Color(90, 90, 90), rect)
+					pygame.draw.rect(self.mSurface, (0, 0, 0), rect)
 				else:
-					pygame.draw.rect(self.mSurface, pygame.Color(255, 255, 255), rect)
+					pygame.draw.rect(self.mSurface, pygame.Color(220, 220, 220), rect)
+
+		self.HighlightWalls(hoverTile)
 
 		self.mKernel.DisplaySurface().blit(self.mSurface, pygame.Rect(0, 0, self.mSize[0] * self.mTileSize, self.mSize[1] * self.mTileSize))

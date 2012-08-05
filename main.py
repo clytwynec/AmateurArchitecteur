@@ -39,8 +39,7 @@ ticker = kernel.Ticker()
 
 maze = Maze(kernel)
 maze.Generate((29, 35))
-maze.MarkBoulders()
-maze.Draw()
+maze.BuildWalls()
 
 monster = Monster(kernel)
 monster.SetPath(maze.Solve((0, 0)))
@@ -53,6 +52,8 @@ gsm.RegisterState(GS_OptionsMenu(kernel))
 gsm.SwitchState("MainMenu")
 
 font = pygame.font.SysFont("Helvetica", 12)
+
+hoverTile = (0, 0)
 
 ## Main Loop
 while (1):
@@ -67,13 +68,16 @@ while (1):
 	#gsm.Update(delta)
 	monster.Update(delta)
 
-	maze.Draw()
+	maze.Draw(hoverTile)
 	monster.Draw()
 
 	for event in pygame.event.get():
 		if event.type == QUIT:
 			pygame.quit()
 			sys.exit()
+		elif event.type == MOUSEMOTION:
+			hoverTile = (int(math.floor(event.pos[1] / 20)), int(math.floor(event.pos[0] / 20)))
+
 		elif event.type == MOUSEBUTTONDOWN:
 			tile = (int(math.floor(event.pos[1] / 20)), int(math.floor(event.pos[0] / 20)))
 
