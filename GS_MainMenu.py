@@ -52,6 +52,15 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mMenuItems["NewGame"] = self.mMenuImages["NewGame"]
 		items += 1
 
+		self.mMenuImages["Tutorial1"] = pygame.image.load(os.path.join("Data", "tutorial.bmp")).convert()
+		self.mMenuImagesHover["Tutorial1"] = pygame.image.load(os.path.join("Data", "tutorial_hover.bmp")).convert()
+		self.mMenuImages["Tutorial1"].set_colorkey(Colors.BLUE)
+		self.mMenuImagesHover["Tutorial1"].set_colorkey(Colors.BLUE)
+		self.mMenuRects["Tutorial1"] = self.mMenuImages["Tutorial1"].get_rect()
+		self.mMenuRects["Tutorial1"].topleft = (275, items * vSpacing + vOffset)
+		self.mMenuItems["Tutorial1"] = self.mMenuImages["Tutorial1"]
+		items += 1
+
 		self.mMenuImages["Exit"] = pygame.image.load(os.path.join("Data", "exit.bmp")).convert()
 		self.mMenuImagesHover["Exit"] = pygame.image.load(os.path.join("Data", "exit_hover.bmp")).convert()
 		self.mMenuImages["Exit"].set_colorkey(Colors.BLUE)
