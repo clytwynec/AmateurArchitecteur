@@ -159,8 +159,6 @@ class Maze:
 					self.mGrid[row][col] = 0
 					self.mCage = (row, col)
 
-		print self.mGrid
-
 		return
 
 	###################################################################################
@@ -223,7 +221,6 @@ class Maze:
 	#
 	###################################################################################
 	def BuildWalls(self):
-		print self.mGrid
 		# Reset
 		self.mTilesToHWall = defaultdict(list)
 		self.mTilesToVWall = defaultdict(list)
@@ -393,7 +390,8 @@ class Maze:
 					and currentCell[1] >= 0 
 					and currentCell[0] < self.mSize[0] 
 					and currentCell[1] < self.mSize[1] 
-					and self.mGrid[currentCell[0]][currentCell[1]] == 0):
+					and self.mGrid[currentCell[0]][currentCell[1]] == 0
+					and currentCell != self.mCage):
 
 					count += 1
 					currentCell = (currentCell[0] + rowModifier, currentCell[1] + colModifier)
@@ -414,6 +412,8 @@ class Maze:
 						currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
 
 					self.BuildWalls()
+
+					return 1
 
 
 	###################################################################################	
