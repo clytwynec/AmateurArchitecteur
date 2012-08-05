@@ -8,39 +8,33 @@ from pygame.locals import *
 from Maze import *
 from Monster import *
 
-class GS_Game(RoboPy.GameState):
+class GS_Tutorial5(RoboPy.GameState):
 	def __init__(self, kernel, gsm):
-		RoboPy.GameState.__init__(self, "Game", kernel, gsm)
+		RoboPy.GameState.__init__(self, "Tutorial5", kernel, gsm)
 
-		self.mMazeSize = (27, 39)
 		self.mMaze = None
 		self.mMonster = None
 
-		# Scoring Stuff
-		self.mScore = 0
-		self.mLevel = 1
-		self.mMoves = 0
-		self.mMarkedScore = 0
+		self.mOffset = (250, 150)
 
 		# Other Stuff
 		self.mHoverTile = (0, 0)
 
-		self.mCountDown = 0
-
 	def Initialize(self):
+		self.mTutorialText = pygame.image.load(os.path.join("Data", "tutorialText5.bmp")).convert()
+		self.mTutorialRect = self.mTutorialText.get_rect()
+
 		# Build maze
 		self.mMaze = Maze(self.mKernel)
-		self.mMaze.SetOffset((10, 10))
-		self.mMaze.Generate(self.mMazeSize)
-		#maze.Load(os.path.join("Data", "tutorial1.maze"))
+		self.mMaze.SetOffset(self.mOffset)
+		self.mMaze.Load(os.path.join("Data", "tutorialCage.maze"))
 		self.mMaze.BuildWalls()
 
 		# Make Monster --- ahhh
 		self.mMonster = Monster(self.mKernel)
-		self.mMonster.SetOffset((10, 10))
+		self.mMonster.SetOffset(self.mOffset)
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
-
 
 		return RoboPy.GameState.Initialize(self)
 
@@ -48,11 +42,11 @@ class GS_Game(RoboPy.GameState):
 		return RoboPy.GameState.Destroy(self)
 
 	def Pause(self):
+		RoboPy.GameState.Pause(self)
 
-		return RoboPy.GameState.Pause(self)
+		return RoboPy.GameState.Destroy(self) 
 
 	def Unpause(self):
-
 		return RoboPy.GameState.Unpause(self)
 
 	def CalcScore(self):
@@ -70,26 +64,28 @@ class GS_Game(RoboPy.GameState):
 		if event.type == QUIT:
 			pygame.quit()
 			sys.exit()
+
 		elif event.type == MOUSEMOTION:
-			self.mHoverTile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
+		 	self.mHoverTile = (int(math.floor((event.pos[1] - self.mOffset[1]) / 20)), int(math.floor((event.pos[0] - self.mOffset[0]) / 20)))
 
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				self.mGameStateManager.SwitchState("MainMenu")
+
 			if event.key == K_w:
-				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "N")
+				self.mMaze.MoveWall(self.mHoverTile, "N")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 			elif event.key == K_s:
-				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "S")
+				self.mMaze.MoveWall(self.mHoverTile, "S")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 			elif event.key == K_a:
-				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "W")
+				self.mMaze.MoveWall(self.mHoverTile, "W")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 			elif event.key == K_d:
-				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "E")
+				self.mMaze.MoveWall(self.mHoverTile, "E")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 		return RoboPy.GameState.HandleEvent(self, event)
@@ -97,30 +93,16 @@ class GS_Game(RoboPy.GameState):
 	def Update(self, delta):
 		self.mMonster.Update(delta)
 
-		#check score
-		if self.mMonster.IsCaught() and self.mMarkedScore == 0:
-			self.mScore = self.mScore + self.CalcScore()
-			self.mMonster.SetPath([])
-			self.mMarkedScore = 1
+		self.mKernel.DisplaySurface().fill(Colors.BLUE)
 
-		self.mKernel.DisplaySurface().fill(Colors.BLACK)
+		self.mKernel.DisplaySurface().blit(self.mTutorialText, self.mTutorialRect)
 
+		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLACK, pygame.Rect(self.mOffset[0] - 10, self.mOffset[1] - 10, 16 * 20, 8 * 20))
 
-		if (self.mMarkedScore):
-			pygame.rect.draw(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(350, 150, 200, 200))
-			self.mMaze.Draw((0, 0))
-		else:
-			self.mMaze.Draw(self.mHoverTile)
-			self.mMonster.Draw()
+		self.mMaze.Draw(self.mHoverTile)
+		self.mMonster.Draw()
 
-		if (self.mMonster.IsFinished()):
-			self.mMarkedScore = 0
-			self.mMoves = 0
-			self.mScore = max(self.mScore - 100, 0)
-
-			self.mMaze.Generate(self.mMazeSize)
-			self.mMaze.BuildWalls()
-			self.mMonster.Reset()
-			self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
+		#if (self.mMonster.IsFinished()):
+			#self.mGameStateManager.SwitchState("Tutorial5")
 
 		return RoboPy.GameState.Update(self, delta)
