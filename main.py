@@ -10,6 +10,7 @@
 # System level imports
 from optparse import OptionParser
 import sys
+import os
 import math
 import pygame
 import random
@@ -40,11 +41,13 @@ ticker = kernel.Ticker()
 #### Stuff
 mazeSize = (29, 39)
 maze = Maze(kernel)
-maze.Generate(mazeSize)
+#maze.Generate(mazeSize)
+maze.Load(os.path.join("Data", "tutorial1.maze"))
 maze.BuildWalls()
 
 monster = Monster(kernel)
 monster.SetPath(maze.Solve((0, 0)))
+monster.SetCage(maze.GetCage())
 
 #### Initialize game states
 gsm = RoboPy.GameStateManager()

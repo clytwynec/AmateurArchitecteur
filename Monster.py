@@ -9,11 +9,13 @@ class Monster:
 		self.mSpeed = 2
 		self.mDestination = None
 		self.mCurrentTile = (0, 0)
+		self.mCage = (0, 0)
 
 		self.mTicks = 0
 
 		self.mNoPath = False
 		self.mFinished = False
+		self.mCaught = False
 
 		self.mKernel = kernel
 		self.mMonsterSize = 20
@@ -56,6 +58,9 @@ class Monster:
 	def IsFinished(self):
 		return self.mFinished
 
+	def IsCaught(self):
+		return self.mCaught
+
 	def HasNoPath(self):
 		return self.mNoPath
 
@@ -73,6 +78,9 @@ class Monster:
 
 	def SetSpeed(self, speed):
 		self.mSpeed = speed
+
+	def SetCage(self, cage):
+		self.mCage = cage
 
 	###################################################################################
 	# Update

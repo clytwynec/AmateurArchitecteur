@@ -106,10 +106,62 @@ class Maze:
 
 		return
 
+	def GetCage(self):
+		return self.mCage
+
+	###################################################################################
+	# Load
+	#
+	# Given a filename, loads a maze from a text file
+	#
+	# The file has the following format:
+	#	4 6		-- width height
+	#	111111	-- 1s are walls
+	#   000000	-- 0s are paths
+	#	111311	-- 3 is the cage
+	#	111000
+	#
+	# Parameters:
+	#	filename - the name of the file
+	###################################################################################
+	def Load(self, filename):
+		file = open(filename)
+
+		sizeLine = file.readline().strip()
+		width, height = sizeLine.split()
+		size = (int(width), int(height))
+
+		self.mSize = size
+		self.mGrid = [[ 1 for col in range(size[1]) ] for row in range(size[0])]
+		self.mSurface = pygame.Surface((size[1] * self.mTileSize, size[0] * self.mTileSize))
+
+		self.mStart = (0, 0)
+		self.mEnd = (size[0] - 1, size[1] - 1)
+
+		for row in range(size[0]):
+			rowLine = file.readline().strip()
+
+			assert len(rowLine) == size[1], "Error: Malformed file.  Expected row of size " + str(size[1]) + " but found row of size " + string(len(rowLine))
+			rawRow = list(rowLine)
+
+			for col in range(size[1]):
+				val = int(rawRow[col])
+
+				self.mGrid[row][col] = val
+
+				if (val == 3):
+					col = self.mGrid[row].index(3)
+					self.mGrid[row][col] = 0
+					self.mCage = (row, col)
+
+		print self.mGrid
+
+		return
+
 	###################################################################################
 	# Solve
 	#
-	# Sovles a maze, given a starting point
+	# Solves a maze, given a starting point
 	#
 	# Parameters:
 	#	start - a 2-tuple of the tile to start with
@@ -166,6 +218,7 @@ class Maze:
 	#
 	###################################################################################
 	def BuildWalls(self):
+		print self.mGrid
 		# Reset
 		self.mTilesToHWall = defaultdict(list)
 		self.mTilesToVWall = defaultdict(list)
