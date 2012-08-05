@@ -37,8 +37,10 @@ kernel = RoboPy.GameKernel()
 screenSurface = kernel.InitializeDisplay((800, 600))
 ticker = kernel.Ticker()
 
+#### Stuff
+mazeSize = (29, 35)
 maze = Maze(kernel)
-maze.Generate((29, 35))
+maze.Generate(mazeSize)
 maze.BuildWalls()
 
 monster = Monster(kernel)
@@ -70,6 +72,12 @@ while (1):
 
 	maze.Draw(hoverTile)
 	monster.Draw()
+
+	if (monster.IsFinished()):
+		maze.Generate(mazeSize)
+		maze.BuildWalls()
+		monster.Reset()
+		monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 	for event in pygame.event.get():
 		if event.type == QUIT:
