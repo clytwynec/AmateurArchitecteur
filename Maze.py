@@ -414,6 +414,8 @@ class Maze:
 						currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
 
 					self.BuildWalls()
+					return 1
+		return 0			
 
 
 	###################################################################################	

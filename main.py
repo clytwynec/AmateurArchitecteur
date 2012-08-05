@@ -26,6 +26,17 @@ from Monster import *
 
 #random.seed(0)
 
+def CalcScore(level, moves):
+	difficulty = level * 10
+	if moves == 0: 
+		moves = 1
+	score = int(math.floor(difficulty * (100 * (1.0/moves))))
+	print moves
+	print level
+	print score
+	return score
+
+
 #########################
 # Start Main
 #########################
@@ -41,8 +52,8 @@ ticker = kernel.Ticker()
 #### Stuff
 mazeSize = (29, 39)
 maze = Maze(kernel)
-#maze.Generate(mazeSize)
-maze.Load(os.path.join("Data", "tutorial1.maze"))
+maze.Generate(mazeSize)
+#maze.Load(os.path.join("Data", "tutorial1.maze"))
 maze.BuildWalls()
 
 monster = Monster(kernel)
@@ -60,6 +71,11 @@ font = pygame.font.SysFont("Helvetica", 12)
 
 hoverTile = (0, 0)
 
+score = 0
+moves = 0
+level = 1
+markedScore = 0
+
 ## Main Loop
 while (1):
 
@@ -73,13 +89,21 @@ while (1):
 	#gsm.Update(delta)
 	monster.Update(delta)
 
+	#check score
+	if monster.IsCaught() and markedScore == 0:
+		score = score + CalcScore(level, moves)
+		markedScore = 1
+
 	maze.Draw(hoverTile)
 	monster.Draw()
 
 	if (monster.IsFinished()):
 		maze.Generate(mazeSize)
+		level += 1 
+		moves = 0
 		maze.BuildWalls()
 		monster.Reset()
+		markedScore = 0
 		monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 	for event in pygame.event.get():
@@ -97,19 +121,19 @@ while (1):
 			monster.SetPath(newPath)
 		elif event.type == KEYDOWN:
 			if event.key == K_w:
-				maze.MoveWall(hoverTile, "N")
+				moves += maze.MoveWall(hoverTile, "N")
 				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 			elif event.key == K_s:
-				maze.MoveWall(hoverTile, "S")
+				moves += maze.MoveWall(hoverTile, "S")
 				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 			elif event.key == K_a:
-				maze.MoveWall(hoverTile, "W")
+				moves += maze.MoveWall(hoverTile, "W")
 				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 			elif event.key == K_d:
-				maze.MoveWall(hoverTile, "E")
+				moves += maze.MoveWall(hoverTile, "E")
 				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 			elif event.key == K_SPACE:

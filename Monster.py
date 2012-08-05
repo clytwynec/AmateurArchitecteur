@@ -73,7 +73,8 @@ class Monster:
 
 		self.mNoPath = False
 		self.mFinished = False
-
+		self.mCaught = False 
+		
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 
 	def SetSpeed(self, speed):
@@ -103,8 +104,8 @@ class Monster:
 			if (self.mDestination[0] == x and self.mDestination[1] == y):
 				self.mRect.left = self.mDestination[0]
 				self.mRect.top = self.mDestination[1]
-				if self.mCurrentTile == 
-
+				if self.mCurrentTile == self.mCage:
+					self.mCaught = True
 				if (len(self.mPath)):
 					rawDest = self.mPath.pop(0)
 					self.mCurrentTile = rawDest
