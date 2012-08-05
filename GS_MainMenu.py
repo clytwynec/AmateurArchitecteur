@@ -78,10 +78,7 @@ class GS_MainMenu(RoboPy.GameState):
 		return RoboPy.GameState.Unpause(self)
 
 	def HandleEvent(self, event):
-		if event.type == KEYDOWN:
-			if event.key == K_ESCAPE:
-				self.mGameStateManager.SwitchState("Game")
-		elif event.type == MOUSEMOTION:
+		if event.type == MOUSEMOTION:
 			for item in self.mMenuRects:
 				if (self.mMenuRects[item].collidepoint(event.pos)):
 					self.mMenuItems[item] = self.mMenuImagesHover[item]

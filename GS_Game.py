@@ -12,7 +12,7 @@ class GS_Game(RoboPy.GameState):
 	def __init__(self, kernel, gsm):
 		RoboPy.GameState.__init__(self, "Game", kernel, gsm)
 
-		self.mMazeSize = (29, 39)
+		self.mMazeSize = (27, 39)
 		self.mMaze = None
 		self.mMonster = None
 
@@ -28,12 +28,14 @@ class GS_Game(RoboPy.GameState):
 	def Initialize(self):
 		# Build maze
 		self.mMaze = Maze(self.mKernel)
+		self.mMaze.SetOffset((10, 10))
 		self.mMaze.Generate(self.mMazeSize)
 		#maze.Load(os.path.join("Data", "tutorial1.maze"))
 		self.mMaze.BuildWalls()
 
 		# Make Monster --- ahhh
 		self.mMonster = Monster(self.mKernel)
+		self.mMonster.SetOffset((10, 10))
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
 
@@ -67,10 +69,10 @@ class GS_Game(RoboPy.GameState):
 			pygame.quit()
 			sys.exit()
 		elif event.type == MOUSEMOTION:
-			self.mHoverTile = (int(math.floor(event.pos[1] / 20)), int(math.floor(event.pos[0] / 20)))
+			self.mHoverTile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
 
 		elif event.type == MOUSEBUTTONDOWN:
-			tile = (int(math.floor(event.pos[1] / 20)), int(math.floor(event.pos[0] / 20)))
+			tile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
 
 			self.mMaze.ToggleGridPoint(tile)
 			newPath = self.mMaze.Solve(self.mMonster.CurrentTile())
@@ -112,6 +114,8 @@ class GS_Game(RoboPy.GameState):
 			self.mScore = self.mScore + self.CalcScore()
 			self.mMarkedScore = 1
 
+		self.mKernel.DisplaySurface().fill(Colors.BLACK)
+
 		self.mMaze.Draw(self.mHoverTile)
 		self.mMonster.Draw()
 
@@ -123,6 +127,5 @@ class GS_Game(RoboPy.GameState):
 			self.mMonster.Reset()
 			self.mMarkedScore = 0
 			self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
 
 		return RoboPy.GameState.Update(self, delta)
