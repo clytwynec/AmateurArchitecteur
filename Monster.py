@@ -11,6 +11,9 @@ class Monster:
 
 		self.mTicks = 0
 
+		self.mNoPath = False
+		self.mFinished = False
+
 		self.mKernel = kernel
 		self.mMonsterSize = 20
 
@@ -38,12 +41,32 @@ class Monster:
 		if (len(path)):
 			rawDest = self.mPath.pop(0)
 			self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
+			self.mNoPath = False
+			self.mFinished = False
 		else:
 			self.mDestination = None
+			self.mNoPath = True
 
 	def CurrentTile(self):
 		return self.mCurrentTile
 
+	def IsFinished(self):
+		return self.mFinished
+
+	def HasNoPath(self):
+		return self.mNoPath
+
+	def Reset(self):
+		self.mPath = []
+		self.mDestination = None
+		self.mCurrentTile = (0, 0)
+
+		self.mTicks = 0
+
+		self.mNoPath = False
+		self.mFinished = False
+
+		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 
 	###################################################################################
 	# Update
@@ -73,6 +96,7 @@ class Monster:
 					self.mDestination = (rawDest[1] * self.mMonsterSize, rawDest[0] * self.mMonsterSize)
 				else:
 					self.mDestination = None
+					self.mFinished = True
 					return
 
 			if (self.mDestination[0] > x):

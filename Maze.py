@@ -44,7 +44,6 @@ class Maze:
 
 		self.mStart = (0, 0)
 		self.mEnd = (size[0] - 1, size[1] - 1)
-		self.mCage = (0, size[1] - 1)
 
 		cellStack = []
 		totalCells = self.mSize[0]*self.mSize[1]
@@ -55,16 +54,20 @@ class Maze:
 
 		while len(visitedCells) < totalCells:
 			visitedCells.append(currentCell)
-			neighbors = [(currentCell[0],currentCell[1]+2),
+			
+			neighbors = [
+				(currentCell[0],currentCell[1]+2),
 				(currentCell[0],currentCell[1]-2),
 				(currentCell[0]+2,currentCell[1]),
-				(currentCell[0]-2,currentCell[1])]
+				(currentCell[0]-2,currentCell[1])
+			]
+
 			random.shuffle(neighbors)	
 			foundNeighbor = 0
 
 			for i in range(0, len(neighbors)):	
-				if neighbors[i][0]>=0 and neighbors[i][0]<self.mSize[0]:
-					if neighbors[i][1]>=0 and neighbors[i][1]<self.mSize[1]:
+				if neighbors[i][0] >= 0 and neighbors[i][0] < self.mSize[0]:
+					if neighbors[i][1] >= 0 and neighbors[i][1] < self.mSize[1]:
 						if self.mGrid[neighbors[i][0]][neighbors[i][1]] == 1:
 							self.mGrid[neighbors[i][0]][neighbors[i][1]] = 0
 
@@ -86,7 +89,21 @@ class Maze:
 			if foundNeighbor == 0:
 				if len(cellStack)==0:
 					break
-				currentCell = cellStack.pop()							
+				currentCell = cellStack.pop()
+
+		solvedPath = self.Solve((0, 0))
+		availableCells = []
+		for i in range(self.mSize[0]):
+			for j in range(self.mSize[1]):
+				availableCells.append((i, j))
+
+		while (self.mCage == self.mStart 
+			or self.mCage == self.mEnd 
+			or self.mCage in solvedPath 
+			or self.mGrid[self.mCage[0]][self.mCage[1]] == 1):
+
+			self.mCage = random.choice(availableCells)
+
 		return
 
 	###################################################################################
