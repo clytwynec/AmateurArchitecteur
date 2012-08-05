@@ -109,6 +109,12 @@ while (1):
 				maze.MoveWall(hoverTile, "E")
 				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
+			elif event.key == K_SPACE:
+				monster.SetSpeed(10)
+		elif event.type == KEYUP:
+			if event.key == K_SPACE:
+				monster.SetSpeed(2)
+
 	#kernel.ProcessSystemEvents()
 	kernel.FlipDisplay()
 

@@ -1,5 +1,6 @@
 import pygame
 import Colors
+import os
 
 class Monster:
 	def __init__(self, kernel):
@@ -17,11 +18,13 @@ class Monster:
 		self.mKernel = kernel
 		self.mMonsterSize = 20
 
-		self.mSurface = pygame.Surface((self.mMonsterSize, self.mMonsterSize))
-		self.mSurface.fill(Colors.TRANSPARENT)
+		fullpath = os.path.join("Data", "monster.bmp")
+		self.mSurface = pygame.image.load(fullpath)
+
+		#self.mSurface.fill(Colors.TRANSPARENT)
 		self.mSurface.set_colorkey(Colors.TRANSPARENT)
 
-		pygame.draw.circle(self.mSurface, Colors.MONSTER, (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
+		#pygame.draw.circle(self.mSurface, Colors.MONSTER, (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
 
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 
@@ -67,6 +70,9 @@ class Monster:
 		self.mFinished = False
 
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
+
+	def SetSpeed(self, speed):
+		self.mSpeed = speed
 
 	###################################################################################
 	# Update

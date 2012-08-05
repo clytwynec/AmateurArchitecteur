@@ -54,7 +54,7 @@ class Maze:
 
 		while len(visitedCells) < totalCells:
 			visitedCells.append(currentCell)
-			
+
 			neighbors = [
 				(currentCell[0],currentCell[1]+2),
 				(currentCell[0],currentCell[1]-2),
