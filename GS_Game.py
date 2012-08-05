@@ -128,6 +128,9 @@ class GS_Game(RoboPy.GameState):
 				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "E")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
+			elif event.key == K_SPACE and self.mLosses >= 3:
+				self.mGameStateManager.SwitchState("MainMenu")
+
 			elif event.key == K_SPACE and self.mMarkedScore == 1:
 				self.mMarkedScore = 0
 				self.mMoves = 0
@@ -161,10 +164,12 @@ class GS_Game(RoboPy.GameState):
 		if (self.mMonster.IsFinished()):
 			self.mMarkedScore = 0
 			self.mMoves = 0
-			self.mScore = max(self.mScore - 100, 0)
 			self.mLosses += 1
 
-			if (self.mLosses <=2):
+			if (self.mLosses <= 3):
+				self.mScore = max(self.mScore - 100, 0)
+
+			if (self.mLosses <= 2):
 				self.mMaze.Generate(self.mMazeSize)
 				self.mMaze.BuildWalls()
 				self.mMonster.Reset()
