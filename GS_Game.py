@@ -56,6 +56,8 @@ class GS_Game(RoboPy.GameState):
 		self.mScoreRect = self.mScoreImage.get_rect()
 		self.mScoreRect.topleft = (150, 570)
 
+		self.mLosses = 0
+
 		self.mMovesImage = pygame.image.load(os.path.join("Data", "movesText.bmp")).convert()
 		self.mMovesImage.set_colorkey((0, 144, 247))
 		self.mMovesRect = self.mMovesImage.get_rect()
@@ -126,6 +128,7 @@ class GS_Game(RoboPy.GameState):
 				self.mMarkedScore = 0
 				self.mMoves = 0
 				self.mLevel += 1
+				self.mLosses = 0 
 				self.mMaze.Generate(self.mMazeSize)
 				self.mMaze.BuildWalls()
 				self.mMonster.Reset()
@@ -164,6 +167,7 @@ class GS_Game(RoboPy.GameState):
 			self.mMarkedScore = 0
 			self.mMoves = 0
 			self.mScore = max(self.mScore - 100, 0)
+			self.mLosses += 1
 
 			self.mMaze.Generate(self.mMazeSize)
 			self.mMaze.BuildWalls()
