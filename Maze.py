@@ -111,7 +111,7 @@ class Maze:
 
 		while (self.mCage == self.mStart 
 			or self.mCage == self.mEnd 
-			or self.mCage not in solvedPath 
+			or self.mCage in solvedPath 
 			or self.mGrid[self.mCage[0]][self.mCage[1]] == 1
 			or self.mCage[0] > (self.mSize[0]/2) and self.mCage[1] > (self.mSize[1]/2) 
 			or self.mCage[0] < (self.mSize[0]/2) and self.mCage[1] < (self.mSize[1]/2) ):

@@ -72,6 +72,10 @@ class GS_Game(RoboPy.GameState):
 		self.mLevelCompleteRect = self.mLevelCompleteImage.get_rect()
 		self.mLevelCompleteRect.topleft = (220, 150)
 
+		self.mGameOverImage = pygame.image.load(os.path.join("Data", "gameOver.bmp")).convert()
+		self.mGameOverRect = self.mLevelCompleteImage.get_rect()
+		self.mGameOverRect.topleft = (220, 150)
+
 		self.mFont = pygame.font.SysFont('Arial', 18, True)
 
 		return RoboPy.GameState.Initialize(self)
@@ -154,26 +158,34 @@ class GS_Game(RoboPy.GameState):
 		scoreRect.topleft = self.mScoreRect.topleft
 		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
 
-		if (self.mMarkedScore):
-			self.mMaze.Draw((0, 0))
-			pygame.draw.rect(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(210, 140, 360, 260))
-			self.mKernel.DisplaySurface().blit(self.mLevelCompleteImage, self.mLevelCompleteRect)
-			self.mKernel.DisplaySurface().blit(scoreSurf, pygame.Rect(380 - int(math.floor(scoreRect.width / 2)), 300, scoreRect.width, scoreRect.height))
-		else:
-			self.mMaze.Draw(self.mHoverTile)
-			self.mMonster.Draw()
-
 		if (self.mMonster.IsFinished()):
 			self.mMarkedScore = 0
 			self.mMoves = 0
 			self.mScore = max(self.mScore - 100, 0)
 			self.mLosses += 1
 
-			self.mMaze.Generate(self.mMazeSize)
-			self.mMaze.BuildWalls()
-			self.mMonster.Reset()
-			self.mMonster.SetCage(self.mMaze.GetCage())
-			self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
+			if (self.mLosses <=2):
+				self.mMaze.Generate(self.mMazeSize)
+				self.mMaze.BuildWalls()
+				self.mMonster.Reset()
+				self.mMonster.SetCage(self.mMaze.GetCage())
+				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
+
+		if (self.mMarkedScore):
+			self.mMaze.Draw((0, 0))
+			pygame.draw.rect(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(210, 140, 360, 260))
+			self.mKernel.DisplaySurface().blit(self.mLevelCompleteImage, self.mLevelCompleteRect)
+			self.mKernel.DisplaySurface().blit(scoreSurf, pygame.Rect(380 - int(math.floor(scoreRect.width / 2)), 300, scoreRect.width, scoreRect.height))
+		elif (self.mLosses >= 3):
+			self.mMaze.Draw((0, 0))
+			self.mMonster.Draw()
+			pygame.draw.rect(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(210, 140, 380, 280))
+			self.mKernel.DisplaySurface().blit(self.mGameOverImage, self.mGameOverRect)
+			self.mKernel.DisplaySurface().blit(scoreSurf, pygame.Rect(380 - int(math.floor(scoreRect.width / 2)), 300, scoreRect.width, scoreRect.height))
+		else:
+			self.mMaze.Draw(self.mHoverTile)
+			self.mMonster.Draw()
+
 
 		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLUE, pygame.Rect(0, 560, 800, 40))
 		self.mKernel.DisplaySurface().blit(self.mScoreImage, self.mScoreRect)
