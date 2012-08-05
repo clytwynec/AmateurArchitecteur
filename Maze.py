@@ -2,6 +2,8 @@ import pygame
 import random
 from collections import defaultdict
 
+import Colors
+
 class Maze:
 	def __init__(self, kernel):
 		# Binary filled grid
@@ -13,6 +15,10 @@ class Maze:
 		self.mHWalls = []
 		self.mVWalls = []
 		self.mBoulders = []
+
+		self.mStart = (0, 0)
+		self.mEnd = (0, 0)
+		self.mCage = (0, 0)
 
 		# Internal stuff, size and kernel
 		self.mSize = (0, 0)
@@ -35,6 +41,10 @@ class Maze:
 		self.mSize = size
 		self.mGrid = [[ 1 for col in range(size[1]) ] for row in range(size[0])]
 		self.mSurface = pygame.Surface((size[1] * self.mTileSize, size[0] * self.mTileSize))
+
+		self.mStart = (0, 0)
+		self.mEnd = (size[0] - 1, size[1] - 1)
+		self.mCage = (0, size[1] - 1)
 
 		cellStack = []
 		totalCells = self.mSize[0]*self.mSize[1]
@@ -139,6 +149,13 @@ class Maze:
 	#
 	###################################################################################
 	def BuildWalls(self):
+		# Reset
+		self.mTilesToHWall = defaultdict(list)
+		self.mTilesToVWall = defaultdict(list)
+		self.mHWalls = []
+		self.mVWalls = []
+		self.mBoulders = []
+
 		self.MarkBoulders()
 
 		for i in range(len(self.mGrid)):
@@ -237,9 +254,8 @@ class Maze:
 	#	tile - coordinates of the tile we're trying to move
 	###################################################################################	
 	def HighlightWalls(self, tile):
-		hColor = (0, 142, 255)
-		vColor = (255, 142, 0)
-
+		hColor = Colors.ORANGE
+		vColor = Colors.BLUE
 		vWalls = self.mTilesToVWall[tile]
 
 		for wall in vWalls:
@@ -275,44 +291,54 @@ class Maze:
 		rowModifier = 0
 		colModifier = 0
 
-		if (direction == 'N'):
-			wall = self.mTilesToVWall[tile]
-			colModifier = -1
-			edge = wall[0]
-		elif (direction == 'S'):
-			wall = self.mTilesToVWall[tile]
-			colModifier = 1
-			edge = wall[-1]
-		elif (direction == 'W'):
-			wall = self.mTilesToHWall[tile]
-			rowModifier = -1
-			edge = wall[-1]
-		elif (direction == 'E'):
-			wall = self.mTilesToHWall[tile]
-			rowModifier = 1
-			edge = wall[0]
+		if (((direction == 'N' or direction == 'S') and len(self.mTilesToVWall[tile])) or ((direction == 'E' or direction == 'W') and len(self.mTilesToHWall[tile]))) :
 
-		if (len(wall) > 0):
-			currentCell = (edge[0] + rowModifier, edge[1] + colModifier)
-			count = 0
+			if (direction == 'N'):
+				wall = self.mTilesToVWall[tile][0]
+				rowModifier = -1
+				edge = wall[0]
+			elif (direction == 'S'):
+				wall = self.mTilesToVWall[tile][0]
+				rowModifier = 1
+				edge = wall[-1]
+			elif (direction == 'W'):
+				wall = self.mTilesToHWall[tile][0]
+				colModifier = -1
+				edge = wall[0]
+			elif (direction == 'E'):
+				wall = self.mTilesToHWall[tile][0]
+				colModifier = 1
+				edge = wall[-1]
 
-			while (self.mGrid[currentCell[0]][self.currentCell[1]] == 0):
-				count += 1
-				currentCell[0] = currentCell[0] + rowModifier
-				currentCell[1] = currentCell[1] + colModifier
+			if (len(wall) > 0):
+				currentCell = (edge[0] + rowModifier, edge[1] + colModifier)
+				count = 0
 
-			if (count > 0):
-				# reset to edge
-				currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
+				while (currentCell[0] >= 0 
+					and currentCell[1] >= 0 
+					and currentCell[0] < self.mSize[0] 
+					and currentCell[1] < self.mSize[1] 
+					and self.mGrid[currentCell[0]][currentCell[1]] == 0):
 
-				reset = 0
-				for i in range(count + len(wall)):
-					if (reset > len(wall)):
-						self.mGrid[currentCell[0]][currentCell[1]] = 0
-					else:
-						self.mGrid[currentCell[0]][currentCell[1]] = 1
-
+					count += 1
 					currentCell = (currentCell[0] + rowModifier, currentCell[1] + colModifier)
+
+				if (count > 0):
+					# reset to edge
+					currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
+
+					reset = 0
+					for i in range(count + len(wall)):
+						if (reset >= len(wall)):
+							self.mGrid[currentCell[0]][currentCell[1]] = 0
+						else:
+							self.mGrid[currentCell[0]][currentCell[1]] = 1
+
+						reset += 1
+
+						currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
+
+					self.BuildWalls()
 
 
 	###################################################################################	
@@ -326,16 +352,18 @@ class Maze:
 				rect = pygame.Rect(col * self.mTileSize, row * self.mTileSize, self.mTileSize, self.mTileSize)
 
 
-				if (row == 0 and col == 0):
-					pygame.draw.rect(self.mSurface, pygame.Color(0, 67, 77), rect)
-				elif (row == self.mSize[0] - 1 and col == self.mSize[1] - 1):
-					pygame.draw.rect(self.mSurface, pygame.Color(255, 188, 126), rect)
+				if ((row, col) == self.mStart):
+					pygame.draw.rect(self.mSurface, Colors.BLUE, rect)
+				elif ((row, col) == self.mEnd):
+					pygame.draw.rect(self.mSurface, Colors.ORANGE, rect)
+				elif ((row, col) == self.mCage):
+					pygame.draw.rect(self.mSurface, Colors.TRANSPARENT, rect)
 				elif (row,col) in self.mBoulders:
-					pygame.draw.rect(self.mSurface, pygame.Color(100, 100, 100), rect)
+					pygame.draw.rect(self.mSurface, Colors.DARKGREY, rect)
 				elif (self.mGrid[row][col] == 1):
-					pygame.draw.rect(self.mSurface, (0, 0, 0), rect)
+					pygame.draw.rect(self.mSurface, Colors.BLACK, rect)
 				else:
-					pygame.draw.rect(self.mSurface, pygame.Color(220, 220, 220), rect)
+					pygame.draw.rect(self.mSurface, Colors.LIGHTGREY, rect)
 
 		self.HighlightWalls(hoverTile)
 

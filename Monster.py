@@ -1,10 +1,11 @@
 import pygame
+import Colors
 
 class Monster:
 	def __init__(self, kernel):
 		self.mPath = []
 
-		self.mSpeed = 20
+		self.mSpeed = 2
 		self.mDestination = None
 		self.mCurrentTile = (0, 0)
 
@@ -14,10 +15,10 @@ class Monster:
 		self.mMonsterSize = 20
 
 		self.mSurface = pygame.Surface((self.mMonsterSize, self.mMonsterSize))
-		self.mSurface.fill((255, 0, 255))
-		self.mSurface.set_colorkey((255, 0, 255))
+		self.mSurface.fill(Colors.TRANSPARENT)
+		self.mSurface.set_colorkey(Colors.TRANSPARENT)
 
-		pygame.draw.circle(self.mSurface, pygame.Color(0, 0, 255, 100), (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
+		pygame.draw.circle(self.mSurface, Colors.MONSTER, (self.mMonsterSize / 2, self.mMonsterSize / 2), (self.mMonsterSize / 2) - 1)
 
 		self.mRect = pygame.Rect(0, 0, self.mMonsterSize, self.mMonsterSize)
 

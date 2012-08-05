@@ -23,7 +23,7 @@ from GS_OptionsMenu import *
 from Maze import *
 from Monster import *
 
-random.seed(0)
+#random.seed(0)
 
 #########################
 # Start Main
@@ -83,11 +83,23 @@ while (1):
 
 			maze.ToggleGridPoint(tile)
 			newPath = maze.Solve(monster.CurrentTile())
+			monster.SetPath(newPath)
+		elif event.type == KEYDOWN:
+			if event.key == K_w:
+				maze.MoveWall(hoverTile, "N")
+				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
-			if (len(newPath)):
-				monster.SetPath(newPath)
-			else:
-				monster.SetPath([])
+			elif event.key == K_s:
+				maze.MoveWall(hoverTile, "S")
+				monster.SetPath(maze.Solve(monster.CurrentTile()))
+
+			elif event.key == K_a:
+				maze.MoveWall(hoverTile, "W")
+				monster.SetPath(maze.Solve(monster.CurrentTile()))
+
+			elif event.key == K_d:
+				maze.MoveWall(hoverTile, "E")
+				monster.SetPath(maze.Solve(monster.CurrentTile()))
 
 	#kernel.ProcessSystemEvents()
 	kernel.FlipDisplay()
