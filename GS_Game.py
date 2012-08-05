@@ -41,6 +41,20 @@ class GS_Game(RoboPy.GameState):
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
 
+		self.mScoreImage = pygame.image.load(os.path.join("Data", "scoreText.bmp")).convert()
+		self.mScoreImage.set_colorkey((0, 144, 247))
+		self.mScoreRect = self.mScoreImage.get_rect()
+		self.mScoreRect.topleft = (150, 570)
+
+		self.mMovesImage = pygame.image.load(os.path.join("Data", "movesText.bmp")).convert()
+		self.mMovesImage.set_colorkey((0, 144, 247))
+		self.mMovesRect = self.mMovesImage.get_rect()
+		self.mMovesRect.topleft = (350, 570)
+
+		self.mLevelImage = pygame.image.load(os.path.join("Data", "levelText.bmp")).convert()
+		self.mLevelImage.set_colorkey((0, 144, 247))
+		self.mLevelRect = self.mLevelImage.get_rect()
+		self.mLevelRect.topleft = (550, 570)
 
 		return RoboPy.GameState.Initialize(self)
 
@@ -92,6 +106,16 @@ class GS_Game(RoboPy.GameState):
 				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "E")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
+			elif event.key == K_SPACE and self.mMarkedScore == 1:
+				self.mMarkedScore = 0
+				self.mMoves = 0
+				self.mLevel += 1
+				self.mMaze.Generate(self.mMazeSize)
+				self.mMaze.BuildWalls()
+				self.mMonster.Reset()
+				self.mMonster.SetSpeed(self.mLevel)
+				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
+
 		return RoboPy.GameState.HandleEvent(self, event)
 
 	def Update(self, delta):
@@ -105,10 +129,10 @@ class GS_Game(RoboPy.GameState):
 
 		self.mKernel.DisplaySurface().fill(Colors.BLACK)
 
-
 		if (self.mMarkedScore):
-			pygame.rect.draw(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(350, 150, 200, 200))
 			self.mMaze.Draw((0, 0))
+			pygame.draw.rect(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(210, 140, 360, 260))
+			pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.LIGHTGREY, pygame.Rect(220, 150, 340, 240))
 		else:
 			self.mMaze.Draw(self.mHoverTile)
 			self.mMonster.Draw()
@@ -122,5 +146,10 @@ class GS_Game(RoboPy.GameState):
 			self.mMaze.BuildWalls()
 			self.mMonster.Reset()
 			self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
+
+		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLUE, pygame.Rect(0, 560, 800, 40))
+		self.mKernel.DisplaySurface().blit(self.mScoreImage, self.mScoreRect)
+		self.mKernel.DisplaySurface().blit(self.mMovesImage, self.mMovesRect)
+		self.mKernel.DisplaySurface().blit(self.mLevelImage, self.mLevelRect)
 
 		return RoboPy.GameState.Update(self, delta)
