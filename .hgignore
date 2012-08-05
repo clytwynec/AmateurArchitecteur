@@ -4,8 +4,10 @@ syntax: glob
 *.pyc
 *.pyo
 *.orig
+dist/**
+build**
+distribution**
+setup.py
 
 syntax: regexp
-/.*\.egg/
-/dist/
-/build/
+.egg\\*
