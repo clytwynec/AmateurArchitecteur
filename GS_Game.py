@@ -71,13 +71,6 @@ class GS_Game(RoboPy.GameState):
 		elif event.type == MOUSEMOTION:
 			self.mHoverTile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
 
-		elif event.type == MOUSEBUTTONDOWN:
-			tile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
-
-			self.mMaze.ToggleGridPoint(tile)
-			newPath = self.mMaze.Solve(self.mMonster.CurrentTile())
-			self.mMonster.SetPath(newPath)
-
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				self.mGameStateManager.SwitchState("MainMenu")
@@ -96,13 +89,6 @@ class GS_Game(RoboPy.GameState):
 			elif event.key == K_d:
 				self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "E")
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
-			elif event.key == K_SPACE:
-				self.mMonster.SetSpeed(10)
-
-		elif event.type == KEYUP:
-			if event.key == K_SPACE:
-				self.mMonster.SetSpeed(2)
 
 		return RoboPy.GameState.HandleEvent(self, event)
 

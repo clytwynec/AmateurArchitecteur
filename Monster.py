@@ -88,7 +88,7 @@ class Monster:
 
 	def SetOffset(self, offset):
 		self.mOffset = offset
-		self.mRect.topleft = (self.mRect.top + self.mOffset[1], self.mRect.left + self.mOffset[0])
+		self.mRect.topleft = (self.mRect.top + self.mOffset[0], self.mRect.left + self.mOffset[1])
 
 	###################################################################################
 	# Update

@@ -22,6 +22,11 @@ import RoboPy
 from GS_MainMenu import *
 from GS_OptionsMenu import *
 from GS_Game import *
+from GS_Tutorial1 import *
+from GS_Tutorial2 import *
+from GS_Tutorial3 import *
+from GS_Tutorial4 import *
+from GS_Tutorial5 import *
 
 #random.seed(0)
 
@@ -43,6 +48,11 @@ gsm = RoboPy.GameStateManager()
 gsm.RegisterState(GS_MainMenu(kernel, gsm))
 gsm.RegisterState(GS_OptionsMenu(kernel, gsm))
 gsm.RegisterState(GS_Game(kernel, gsm))
+gsm.RegisterState(GS_Tutorial1(kernel, gsm))
+gsm.RegisterState(GS_Tutorial2(kernel, gsm))
+gsm.RegisterState(GS_Tutorial3(kernel, gsm))
+gsm.RegisterState(GS_Tutorial4(kernel, gsm))
+gsm.RegisterState(GS_Tutorial5(kernel, gsm))
 
 gsm.SwitchState("MainMenu")
 

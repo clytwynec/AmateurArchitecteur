@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 from collections import defaultdict
 
 import Colors
@@ -26,6 +27,9 @@ class Maze:
 		self.mSize = (0, 0)
 		self.mKernel = kernel
 		self.mTileSize = 20
+
+		# Cage Graphic
+		self.mCageGraphic = pygame.image.load(os.path.join("Data", "Cage.bmp")).convert()
 
 		# Pygame tomfoolery
 		self.mSurface = None
@@ -436,7 +440,7 @@ class Maze:
 				elif ((row, col) == self.mEnd):
 					pygame.draw.rect(self.mSurface, Colors.ORANGE, rect)
 				elif ((row, col) == self.mCage):
-					pygame.draw.rect(self.mSurface, Colors.TRANSPARENT, rect)
+					self.mSurface.blit(self.mCageGraphic, rect)# pygame.draw.rect(self.mSurface, Colors.TRANSPARENT, rect)
 				elif (row,col) in self.mBoulders:
 					pygame.draw.rect(self.mSurface, Colors.DARKGREY, rect)
 				elif (self.mGrid[row][col] == 1):

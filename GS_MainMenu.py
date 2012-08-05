@@ -29,6 +29,12 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mHeadingRect = self.mHeading.get_rect()
 		self.mHeadingRect.topleft = (50, 20)
 
+		self.mBigMonster = pygame.image.load(os.path.join("Data", "BigMonster.bmp")).convert()
+		self.mBigMonster.set_colorkey(Colors.TRANSPARENT)
+		self.mBigMonsterRect = self.mBigMonster.get_rect()
+		self.mBigMonsterRect.top = 350
+		self.mBigMonsterRect.left = -10
+
 		vSpacing = 100
 		vOffset = 100
 		items = 1
@@ -57,7 +63,7 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mMenuImages["Tutorial1"].set_colorkey(Colors.BLUE)
 		self.mMenuImagesHover["Tutorial1"].set_colorkey(Colors.BLUE)
 		self.mMenuRects["Tutorial1"] = self.mMenuImages["Tutorial1"].get_rect()
-		self.mMenuRects["Tutorial1"].topleft = (275, items * vSpacing + vOffset)
+		self.mMenuRects["Tutorial1"].topleft = (277, items * vSpacing + vOffset)
 		self.mMenuItems["Tutorial1"] = self.mMenuImages["Tutorial1"]
 		items += 1
 
@@ -66,7 +72,7 @@ class GS_MainMenu(RoboPy.GameState):
 		self.mMenuImages["Exit"].set_colorkey(Colors.BLUE)
 		self.mMenuImagesHover["Exit"].set_colorkey(Colors.BLUE)
 		self.mMenuRects["Exit"] = self.mMenuImages["Exit"].get_rect()
-		self.mMenuRects["Exit"].topleft = (320, items * vSpacing + vOffset)
+		self.mMenuRects["Exit"].topleft = (325, items * vSpacing + vOffset)
 		self.mMenuItems["Exit"] = self.mMenuImages["Exit"]
 		items += 1
 
@@ -110,6 +116,7 @@ class GS_MainMenu(RoboPy.GameState):
 
 	def Update(self, delta):
 		self.mKernel.DisplaySurface().blit(self.mBGSurface, self.mKernel.DisplaySurface().get_rect())
+		self.mKernel.DisplaySurface().blit(self.mBigMonster, self.mBigMonsterRect)
 		self.mKernel.DisplaySurface().blit(self.mHeading, self.mHeadingRect)
 
 		for item in self.mMenuItems:
