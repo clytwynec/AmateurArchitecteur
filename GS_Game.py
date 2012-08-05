@@ -12,7 +12,7 @@ class GS_Game(RoboPy.GameState):
 	def __init__(self, kernel, gsm):
 		RoboPy.GameState.__init__(self, "Game", kernel, gsm)
 
-		self.mMazeSize = (27, 39)
+		self.mMazeSize = (11, 11)#(27, 39)
 		self.mMaze = None
 		self.mMonster = None
 
@@ -65,6 +65,10 @@ class GS_Game(RoboPy.GameState):
 		self.mLevelImage.set_colorkey((0, 144, 247))
 		self.mLevelRect = self.mLevelImage.get_rect()
 		self.mLevelRect.topleft = (550, 570)
+
+		self.mLevelCompleteImage = pygame.image.load(os.path.join("Data", "levelComplete.bmp")).convert()
+		self.mLevelCompleteRect = self.mLevelCompleteImage.get_rect()
+		self.mLevelCompleteRect.topleft = (220, 150)
 
 		self.mFont = pygame.font.SysFont('Arial', 18, True)
 
@@ -125,6 +129,7 @@ class GS_Game(RoboPy.GameState):
 				self.mMaze.Generate(self.mMazeSize)
 				self.mMaze.BuildWalls()
 				self.mMonster.Reset()
+				self.mMonster.SetCage(self.mMaze.GetCage())
 				self.mMonster.SetSpeed(self.mLevel)
 				self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
@@ -141,10 +146,16 @@ class GS_Game(RoboPy.GameState):
 
 		self.mKernel.DisplaySurface().fill(Colors.BLACK)
 
+		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
+		scoreRect = scoreSurf.get_rect()
+		scoreRect.topleft = self.mScoreRect.topleft
+		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
+
 		if (self.mMarkedScore):
 			self.mMaze.Draw((0, 0))
 			pygame.draw.rect(self.mKernel.DisplaySurface(), (0, 0, 0), pygame.Rect(210, 140, 360, 260))
-			pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.LIGHTGREY, pygame.Rect(220, 150, 340, 240))
+			self.mKernel.DisplaySurface().blit(self.mLevelCompleteImage, self.mLevelCompleteRect)
+			self.mKernel.DisplaySurface().blit(scoreSurf, pygame.Rect(380 - int(math.floor(scoreRect.width / 2)), 300, scoreRect.width, scoreRect.height))
 		else:
 			self.mMaze.Draw(self.mHoverTile)
 			self.mMonster.Draw()
@@ -157,6 +168,7 @@ class GS_Game(RoboPy.GameState):
 			self.mMaze.Generate(self.mMazeSize)
 			self.mMaze.BuildWalls()
 			self.mMonster.Reset()
+			self.mMonster.SetCage(self.mMaze.GetCage())
 			self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLUE, pygame.Rect(0, 560, 800, 40))
@@ -164,22 +176,18 @@ class GS_Game(RoboPy.GameState):
 		self.mKernel.DisplaySurface().blit(self.mMovesImage, self.mMovesRect)
 		self.mKernel.DisplaySurface().blit(self.mLevelImage, self.mLevelRect)
 
-		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
-		scoreRect = scoreSurf.get_rect()
-		scoreRect.topleft = self.mScoreRect.topleft
-		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
 		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
 
-		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
-		scoreRect = scoreSurf.get_rect()
-		scoreRect.topleft = self.mScoreRect.topleft
-		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
-		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
+		moveSurf = self.mFont.render(str(self.mMoves), True, (0, 0, 0))
+		moveRect = moveSurf.get_rect()
+		moveRect.topleft = self.mMovesRect.topleft
+		moveRect.left = moveRect.left + self.mMovesRect.width + 10
+		self.mKernel.DisplaySurface().blit(moveSurf, moveRect)
 
-		scoreSurf = self.mFont.render(str(self.mScore), True, (0, 0, 0))
-		scoreRect = scoreSurf.get_rect()
-		scoreRect.topleft = self.mScoreRect.topleft
-		scoreRect.left = scoreRect.left + self.mScoreRect.width + 10
-		self.mKernel.DisplaySurface().blit(scoreSurf, scoreRect)
+		levelSurf = self.mFont.render(str(self.mLevel), True, (0, 0, 0))
+		levelRect = levelSurf.get_rect()
+		levelRect.topleft = self.mLevelRect.topleft
+		levelRect.left = levelRect.left + self.mLevelRect.width + 10
+		self.mKernel.DisplaySurface().blit(levelSurf, levelRect)
 
 		return RoboPy.GameState.Update(self, delta)
