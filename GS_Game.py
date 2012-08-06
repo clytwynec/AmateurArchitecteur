@@ -76,6 +76,13 @@ class GS_Game(RoboPy.GameState):
 		self.mGameOverRect = self.mLevelCompleteImage.get_rect()
 		self.mGameOverRect.topleft = (220, 150)
 
+		self.mMutedImage = pygame.image.load(os.path.join("Data", "mute.bmp")).convert()
+		self.mUnmutedImage = pygame.image.load(os.path.join("Data", "unmute.bmp")).convert()
+		self.mVolumeImage = self.mUnmutedImage
+		self.mVolumeRect = self.mVolumeImage.get_rect()
+		self.mVolumeRect.topleft = (10, 570)
+		self.mVolumeState = 1
+
 		self.mFont = pygame.font.SysFont('Arial', 18, True)
 
 		return RoboPy.GameState.Initialize(self)
@@ -108,6 +115,17 @@ class GS_Game(RoboPy.GameState):
 			sys.exit()
 		elif event.type == MOUSEMOTION:
 			self.mHoverTile = (int(math.floor((event.pos[1] - 10) / 20)), int(math.floor((event.pos[0] - 10) / 20)))
+
+		elif event.type == MOUSEBUTTONDOWN:
+			if (self.mVolumeRect.collidepoint(event.pos)):
+				if (self.mVolumeState == 1):
+					self.mVolumeImage = self.mMutedImage
+					self.mVolumeState = 0
+					self.mMaze.Mute()
+				else:
+					self.mVolumeImage = self.mUnmutedImage
+					self.mVolumeState = 1
+					self.mMaze.Unmute()
 
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
@@ -210,6 +228,8 @@ class GS_Game(RoboPy.GameState):
 		levelRect = levelSurf.get_rect()
 		levelRect.topleft = self.mLevelRect.topleft
 		levelRect.left = levelRect.left + self.mLevelRect.width + 10
+
 		self.mKernel.DisplaySurface().blit(levelSurf, levelRect)
+		self.mKernel.DisplaySurface().blit(self.mVolumeImage, self.mVolumeRect)
 
 		return RoboPy.GameState.Update(self, delta)

@@ -31,6 +31,9 @@ class Maze:
 		# Cage Graphic
 		self.mCageGraphic = pygame.image.load(os.path.join("Data", "Cage.bmp")).convert()
 
+		# Move Sound
+		self.mMoveSound = pygame.mixer.Sound(os.path.join("Data", "click.wav"))
+
 		# Pygame tomfoolery
 		self.mSurface = None
 		return
@@ -122,6 +125,12 @@ class Maze:
 
 	def GetCage(self):
 		return self.mCage
+
+	def Mute(self):
+		self.mMoveSound.set_volume(0)
+
+	def Unmute(self):
+		self.mMoveSound.set_volume(1)
 
 	###################################################################################
 	# Load
@@ -419,6 +428,8 @@ class Maze:
 						reset += 1
 
 						currentCell = (currentCell[0] - rowModifier, currentCell[1] - colModifier)
+
+					self.mMoveSound.play()
 
 					self.BuildWalls()
 					return 1
