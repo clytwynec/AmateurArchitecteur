@@ -36,6 +36,18 @@ class GS_Tutorial1(RoboPy.GameState):
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
 
+		self.mBackImage = pygame.image.load(os.path.join("Data", "main_menu.bmp")).convert()
+		self.mBackHover = pygame.image.load(os.path.join("Data", "main_menu_hover.bmp")).convert()
+		self.mBackButton = self.mBackImage
+		self.mBackRect = self.mBackButton.get_rect()
+		self.mBackRect.topleft = (20, 530)
+
+		self.mNextImage = pygame.image.load(os.path.join("Data", "next.bmp")).convert()
+		self.mNextHover = pygame.image.load(os.path.join("Data", "next_hover.bmp")).convert()
+		self.mNextButton = self.mNextImage
+		self.mNextRect = self.mNextButton.get_rect()
+		self.mNextRect.topleft = (630, 530)
+
 		return RoboPy.GameState.Initialize(self)
 
 	def Destroy(self):
@@ -65,29 +77,25 @@ class GS_Tutorial1(RoboPy.GameState):
 		if event.type == QUIT:
 			pygame.quit()
 			sys.exit()
+		elif event.type == MOUSEMOTION:
+			if (self.mBackRect.collidepoint(event.pos)):
+				self.mBackButton = self.mBackHover
+			else:
+				self.mBackButton = self.mBackImage
 
-		# elif event.type == MOUSEMOTION:
-		# 	self.mHoverTile = (int(math.floor((event.pos[1] - self.mOffset[1]) / 20)), int(math.floor((event.pos[0] - self.mOffset[0]) / 20)))
+			if (self.mNextRect.collidepoint(event.pos)):
+				self.mNextButton = self.mNextHover
+			else:
+				self.mNextButton = self.mNextImage
+		elif event.type == MOUSEBUTTONDOWN:
+			if (self.mBackRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("MainMenu")
+			elif (self.mNextRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("Tutorial2")
 
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				self.mGameStateManager.SwitchState("MainMenu")
-
-			# if event.key == K_w:
-			# 	self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "N")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
-			# elif event.key == K_s:
-			# 	self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "S")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
-			# elif event.key == K_a:
-			# 	self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "W")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
-			# elif event.key == K_d:
-			# 	self.mMoves += self.mMaze.MoveWall(self.mHoverTile, "E")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 		return RoboPy.GameState.HandleEvent(self, event)
 
@@ -100,10 +108,10 @@ class GS_Tutorial1(RoboPy.GameState):
 
 		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLACK, pygame.Rect(self.mOffset[0] - 10, self.mOffset[1] - 10, 16 * 20, 8 * 20))
 
+		self.mKernel.DisplaySurface().blit(self.mNextButton, self.mNextRect)
+		self.mKernel.DisplaySurface().blit(self.mBackButton, self.mBackRect)
+
 		self.mMaze.Draw(self.mHoverTile)
 		self.mMonster.Draw()
-
-		if (self.mMonster.IsFinished()):
-			self.mGameStateManager.SwitchState("Tutorial2")
 
 		return RoboPy.GameState.Update(self, delta)

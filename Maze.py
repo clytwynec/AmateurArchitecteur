@@ -190,6 +190,7 @@ class Maze:
 			visitedCells.append(currentCell)
 
 			if (currentCell == end):
+				cellStack.append(currentCell)
 				return cellStack
 
 			neighbors = [
@@ -201,12 +202,11 @@ class Maze:
 
 			foundNeighbor = 0
 
-			for i in range(0, len(neighbors)):	
+			for i in range(0, len(neighbors)):
 				if neighbors[i][0] >= 0 and neighbors[i][0] < self.mSize[0]:
 					if neighbors[i][1] >= 0 and neighbors[i][1] < self.mSize[1]:
 						if neighbors[i] not in visitedCells and self.mGrid[neighbors[i][0]][neighbors[i][1]] == 0:
 							cellStack.append(currentCell)
-							cellStack.append(neighbors[i])
 							foundNeighbor = 1
 							currentCell = neighbors[i]
 

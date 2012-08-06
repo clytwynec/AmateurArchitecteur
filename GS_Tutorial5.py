@@ -36,6 +36,18 @@ class GS_Tutorial5(RoboPy.GameState):
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
 
+		self.mBackImage = pygame.image.load(os.path.join("Data", "back.bmp")).convert()
+		self.mBackHover = pygame.image.load(os.path.join("Data", "back_hover.bmp")).convert()
+		self.mBackButton = self.mBackImage
+		self.mBackRect = self.mBackButton.get_rect()
+		self.mBackRect.topleft = (20, 530)
+
+		self.mNextImage = pygame.image.load(os.path.join("Data", "main_menu.bmp")).convert()
+		self.mNextHover = pygame.image.load(os.path.join("Data", "main_menu_hover.bmp")).convert()
+		self.mNextButton = self.mNextImage
+		self.mNextRect = self.mNextButton.get_rect()
+		self.mNextRect.topleft = (530, 530)
+
 		return RoboPy.GameState.Initialize(self)
 
 	def Destroy(self):
@@ -68,6 +80,20 @@ class GS_Tutorial5(RoboPy.GameState):
 		elif event.type == MOUSEMOTION:
 		 	self.mHoverTile = (int(math.floor((event.pos[1] - self.mOffset[1]) / 20)), int(math.floor((event.pos[0] - self.mOffset[0]) / 20)))
 
+		 	if (self.mBackRect.collidepoint(event.pos)):
+				self.mBackButton = self.mBackHover
+			else:
+				self.mBackButton = self.mBackImage
+
+			if (self.mNextRect.collidepoint(event.pos)):
+				self.mNextButton = self.mNextHover
+			else:
+				self.mNextButton = self.mNextImage
+		elif event.type == MOUSEBUTTONDOWN:
+			if (self.mBackRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("Tutorial4")
+			elif (self.mNextRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("MainMenu")
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				self.mGameStateManager.SwitchState("MainMenu")
@@ -100,9 +126,11 @@ class GS_Tutorial5(RoboPy.GameState):
 		pygame.draw.rect(self.mKernel.DisplaySurface(), Colors.BLACK, pygame.Rect(self.mOffset[0] - 10, self.mOffset[1] - 10, 16 * 20, 8 * 20))
 
 		self.mMaze.Draw(self.mHoverTile)
-		self.mMonster.Draw()
 
-		#if (self.mMonster.IsFinished()):
-			#self.mGameStateManager.SwitchState("Tutorial5")
+		self.mKernel.DisplaySurface().blit(self.mNextButton, self.mNextRect)
+		self.mKernel.DisplaySurface().blit(self.mBackButton, self.mBackRect)
+
+		if (not self.mMonster.IsCaught()):
+			self.mMonster.Draw()
 
 		return RoboPy.GameState.Update(self, delta)

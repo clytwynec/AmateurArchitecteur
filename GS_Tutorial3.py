@@ -36,6 +36,18 @@ class GS_Tutorial3(RoboPy.GameState):
 		self.mMonster.SetPath(self.mMaze.Solve((0, 0)))
 		self.mMonster.SetCage(self.mMaze.GetCage())
 
+		self.mBackImage = pygame.image.load(os.path.join("Data", "back.bmp")).convert()
+		self.mBackHover = pygame.image.load(os.path.join("Data", "back_hover.bmp")).convert()
+		self.mBackButton = self.mBackImage
+		self.mBackRect = self.mBackButton.get_rect()
+		self.mBackRect.topleft = (20, 530)
+
+		self.mNextImage = pygame.image.load(os.path.join("Data", "next.bmp")).convert()
+		self.mNextHover = pygame.image.load(os.path.join("Data", "next_hover.bmp")).convert()
+		self.mNextButton = self.mNextImage
+		self.mNextRect = self.mNextButton.get_rect()
+		self.mNextRect.topleft = (630, 530)
+
 		return RoboPy.GameState.Initialize(self)
 
 	def Destroy(self):
@@ -68,17 +80,23 @@ class GS_Tutorial3(RoboPy.GameState):
 		elif event.type == MOUSEMOTION:
 		 	self.mHoverTile = (int(math.floor((event.pos[1] - self.mOffset[1]) / 20)), int(math.floor((event.pos[0] - self.mOffset[0]) / 20)))
 
+		 	if (self.mBackRect.collidepoint(event.pos)):
+				self.mBackButton = self.mBackHover
+			else:
+				self.mBackButton = self.mBackImage
+
+			if (self.mNextRect.collidepoint(event.pos)):
+				self.mNextButton = self.mNextHover
+			else:
+				self.mNextButton = self.mNextImage
+		elif event.type == MOUSEBUTTONDOWN:
+			if (self.mBackRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("Tutorial2")
+			elif (self.mNextRect.collidepoint(event.pos)):
+				self.mGameStateManager.SwitchState("Tutorial4")
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				self.mGameStateManager.SwitchState("MainMenu")
-
-			# if event.key == K_w:
-			# 	self.mMaze.MoveWall(self.mHoverTile, "N")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
-
-			# elif event.key == K_s:
-			# 	self.mMaze.MoveWall(self.mHoverTile, "S")
-			# 	self.mMonster.SetPath(self.mMaze.Solve(self.mMonster.CurrentTile()))
 
 			if event.key == K_a:
 				self.mMaze.MoveWall(self.mHoverTile, "W")
@@ -102,7 +120,7 @@ class GS_Tutorial3(RoboPy.GameState):
 		self.mMaze.Draw(self.mHoverTile)
 		self.mMonster.Draw()
 
-		if (self.mMonster.IsFinished()):
-			self.mGameStateManager.SwitchState("Tutorial4")
+		self.mKernel.DisplaySurface().blit(self.mNextButton, self.mNextRect)
+		self.mKernel.DisplaySurface().blit(self.mBackButton, self.mBackRect)
 
 		return RoboPy.GameState.Update(self, delta)
