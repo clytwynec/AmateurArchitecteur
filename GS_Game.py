@@ -130,6 +130,7 @@ class GS_Game(RoboPy.GameState):
 
 			elif event.key == K_SPACE and self.mLosses >= 3:
 				self.mGameStateManager.SwitchState("MainMenu")
+				self.Destroy()
 
 			elif event.key == K_SPACE and self.mMarkedScore == 1:
 				self.mMarkedScore = 0
